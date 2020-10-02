@@ -14,20 +14,42 @@
     </div>
     <div class="empty" v-else>No videos</div>
     <div class="control" @mouseover="showControls" @mouseleave="hideControls">
+      <ul v-if="open" class="live-list">
+        <li class="live" v-for="live in Object.values(lives)" :key="live.hash">
+          <span class="start">{{ live.start }}</span>
+          <span class="member">{{ live.member }}</span>
+          <span class="hash" @click="addHash(live.hash)">
+            {{ live.hash }}
+          </span>
+          <span class="outlink">
+            <a :href="live.url" target="_blank" rel="nofollow noopener">◥</a>
+          </span>
+          <span class="title">
+            <span v-if="live.title">{{ live.title }}</span>
+            <span v-else @click="getLiveTitle(live.hash)">get title</span>
+          </span>
+        </li>
+      </ul>
       <input
         class="control-base"
         type="text"
         v-model="hashInput"
         @keydown.enter="addHash"
       />
-      <button class="control-base add" @click="addHash">add</button>
+      <button class="control-base add" @click="addHash(hashInput.value)">
+        add
+      </button>
       <button class="control-base clear" @click="clearHash">clear</button>
+      <button class="control-base add" @click="toggleOpen">
+        {{ open ? "▼" : "▲" }}
+      </button>
+      <button class="control-base add" @click="getLives">⟳</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 export const hashInput = ref("");
 export const hashList = ref([]);
 export const size = computed(() =>
@@ -36,8 +58,8 @@ export const size = computed(() =>
     .join(" ")
 );
 
-export const addHash = () => {
-  hashList.value.push(hashInput.value);
+export const addHash = (hash) => {
+  hashList.value.push(hash);
 };
 export const removeHash = (x) =>
   (hashList.value = hashList.value.filter((_, y) => x !== y));
@@ -49,6 +71,41 @@ export const clearHash = () => {
 export const controls = ref(1);
 export const showControls = () => (controls.value = 1);
 export const hideControls = () => (controls.value = 0);
+
+export const lives = reactive({});
+// export const hashList = ref<{member:string,hash:string,url:string,title?:string}[]>([]);
+export const getLives = async () => {
+  const res = await fetch("https://api.yue.coffee/api/v1/hololive");
+  const { data, error } = await res.json();
+  if (error) return;
+  data.forEach((live) => {
+    lives[live.hash] = live;
+  });
+};
+
+onMounted(() => {
+  getLives();
+});
+
+export const getLiveTitle = async (hash) => {
+  lives[hash].title = "⟳";
+  const res = await fetch("https://api.yue.coffee/api/v1/page-title", {
+    method: "post",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      url: `https://www.youtube.com/watch?v=${hash}`,
+    }),
+  });
+  const { data, error } = await res.json();
+  if (error) return;
+  lives[hash].title = data.title;
+};
+
+export const open = ref(true);
+export const toggleOpen = () => (open.value = !open.value);
 </script>
 
 <style scoped vars="{ size, controls }">
@@ -129,5 +186,39 @@ export const hideControls = () => (controls.value = 0);
   color: #fff;
   display: grid;
   place-items: center;
+}
+.live-list {
+  max-height: 80vh;
+  overflow: scroll;
+  list-style: none;
+  font-size: 1rem;
+}
+.live {
+  background-color: #000;
+  display: grid;
+  grid-template-columns: 3rem 8rem 8rem 1rem 1fr;
+  gap: 1rem;
+}
+.start {
+  color: #ccc;
+}
+
+.member {
+  color: hotpink;
+}
+.hash {
+  color: skyblue;
+  cursor: pointer;
+}
+.outlink {
+  color: #fff;
+}
+.title {
+  color: yellowgreen;
+  cursor: pointer;
+}
+a {
+  color: inherit;
+  text-decoration: none;
 }
 </style>
