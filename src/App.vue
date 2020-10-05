@@ -5,6 +5,9 @@
         <div class="frame-control">
           <div class="close" @click="removeHash(i)">X</div>
           <div class="comment" @click="popup(hash)">comment</div>
+          <a :href="`https://www.youtube.com/watch?v=${hash}`" target="_blank"
+            >https://www.youtube.com/watch?v={{ hash }}</a
+          >
         </div>
         <iframe
           :src="`https://www.youtube.com/embed/${hash}?autoplay=1`"
@@ -15,36 +18,52 @@
     </div>
     <div class="empty" v-else>No videos</div>
     <div class="control" @mouseover="showControls" @mouseleave="hideControls">
+      <div class="control-panel">
+        <input
+          class="control-base"
+          type="text"
+          v-model="hashInput"
+          @keydown.enter="addHash"
+        />
+        <button class="control-base add" @click="addHash(hashInput.value)">
+          add
+        </button>
+        <button class="control-base clear" @click="clearHash">clear</button>
+        <button class="control-base add" @click="toggleOpen">
+          {{ open ? "▲" : "▼" }}
+        </button>
+        <button class="control-base add" @click="getLives">⟳</button>
+      </div>
       <ul v-if="open" class="live-list">
-        <li class="live" v-for="live in Object.values(lives)" :key="live.hash">
-          <span class="start">{{ live.start }}</span>
-          <span class="member">{{ live.member }}</span>
-          <span class="hash" @click="addHash(live.hash)">
-            {{ live.hash }}
-          </span>
-          <span class="outlink">
-            <a :href="live.url" target="_blank" rel="nofollow noopener">◥</a>
-          </span>
-          <span class="title">
-            <span v-if="live.title">{{ live.title }}</span>
-            <span v-else @click="getLiveTitle(live.hash)">get title</span>
-          </span>
+        <li
+          class="live"
+          @click="addHash(live.hash)"
+          v-for="live in Object.values(lives)"
+          :key="live.hash"
+        >
+          <div class="live-content">
+            <span class="start">{{ live.start }}</span>
+            <span class="member">{{ live.member }}</span>
+            <span class="hash">
+              {{ live.hash }}
+            </span>
+            <span class="outlink">
+              <a :href="live.url" target="_blank" rel="nofollow noopener">◥</a>
+            </span>
+            <span class="title">
+              <span v-if="live.title">{{ live.title }}</span>
+              <span v-else @click.stop="getLiveTitle(live.hash)"
+                >get title</span
+              >
+            </span>
+          </div>
+          <img
+            class="thumbnail"
+            :src="`https://img.youtube.com/vi/${live.hash}/mqdefault.jpg`"
+            alt=""
+          />
         </li>
       </ul>
-      <input
-        class="control-base"
-        type="text"
-        v-model="hashInput"
-        @keydown.enter="addHash"
-      />
-      <button class="control-base add" @click="addHash(hashInput.value)">
-        add
-      </button>
-      <button class="control-base clear" @click="clearHash">clear</button>
-      <button class="control-base add" @click="toggleOpen">
-        {{ open ? "▼" : "▲" }}
-      </button>
-      <button class="control-base add" @click="getLives">⟳</button>
     </div>
   </div>
 </template>
@@ -61,6 +80,7 @@ export const size = computed(() =>
 
 export const addHash = (hash) => {
   hashList.value.push(hash);
+  popup(hash);
 };
 export const removeHash = (x) =>
   (hashList.value = hashList.value.filter((_, y) => x !== y));
@@ -127,29 +147,32 @@ export const popup = (hash) =>
   transition: 0.3s all ease-in-out;
   opacity: var(--controls);
   position: fixed;
-  bottom: 0;
-  left: 0;
+  top: 0;
+  right: 0;
   z-index: 10000000;
   font-size: 30px;
 }
 .control-base {
   transition: 0.3s all ease-in-out;
-  height: 50px;
+  height: 40px;
   border: 0;
   outline: 0;
-  font-size: 30px;
+  font-size: 24px;
   border: 0;
   appearance: none;
 }
 .control input {
-  width: 300px;
   color: #ccc;
   background-color: #333;
+  max-width: 50vw;
 }
 
 .control button {
-  width: 100px;
   cursor: pointer;
+}
+.control-panel {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto;
 }
 
 .control button:hover {
@@ -224,15 +247,53 @@ export const popup = (hash) =>
   overflow: scroll;
   list-style: none;
   font-size: 1rem;
+  padding: 0;
 }
-.live {
-  background-color: #000;
+.live-content {
+  height: 1.6rem;
+  transition: 0.1s all ease-in-out;
   display: grid;
   grid-template-columns: 3rem 8rem 8rem 1rem 1fr;
   gap: 1rem;
 }
+
+.live-content:hover {
+  /* background-color: #666; */
+}
+
+.live {
+  cursor: pointer;
+  transition: 0.3s all ease-in-out;
+  position: relative;
+  background-color: #000;
+}
+
+.live:hover {
+  background-color: #666;
+}
+
+.live:hover .thumbnail {
+  /* opacity: 1; */
+  /* transform: translateY(0); */
+}
+
 .start {
   color: #ccc;
+}
+
+.thumbnail {
+  pointer-events: none;
+  /* transition: 0.3s all ease-in-out; */
+  /* opacity: 0; */
+  /* transform: translateY(-10px); */
+  /* position: absolute; */
+  /* top: 1.6rem; */
+  /* left: clac(50% - 160px); */
+  width: 320px;
+  height: 180px;
+  /* background-color: #000; */
+  /* box-shadow: 0 0 3px #333; */
+  /* z-index: 100000000; */
 }
 
 .member {
@@ -240,7 +301,6 @@ export const popup = (hash) =>
 }
 .hash {
   color: skyblue;
-  cursor: pointer;
 }
 .outlink {
   color: #fff;
