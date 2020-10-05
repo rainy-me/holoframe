@@ -5,9 +5,9 @@
         <div class="frame-control">
           <div class="close" @click="removeHash(i)">X</div>
           <div class="comment" @click="popup(hash)">comment</div>
-          <a :href="`https://www.youtube.com/watch?v=${hash}`" target="_blank"
-            >https://www.youtube.com/watch?v={{ hash }}</a
-          >
+          <a :href="`https://www.youtube.com/watch?v=${hash}`" target="_blank">
+            https://www.youtube.com/watch?v={{ hash }}
+          </a>
         </div>
         <iframe
           :src="`https://www.youtube.com/embed/${hash}?autoplay=1`"
@@ -36,7 +36,7 @@
       </div>
       <ul v-if="open" class="live-list">
         <li
-          class="live"
+          :class="['live', { 'is-streaming': live.isStreaming }]"
           @click="addHash(live.hash)"
           v-for="live in Object.values(lives)"
           :key="live.hash"
@@ -48,20 +48,28 @@
               {{ live.hash }}
             </span>
             <span class="outlink">
-              <a :href="live.url" target="_blank" rel="nofollow noopener">◥</a>
-            </span>
-            <span class="title">
-              <span v-if="live.title">{{ live.title }}</span>
-              <span v-else @click.stop="getLiveTitle(live.hash)"
-                >get title</span
+              <a
+                @click.stop
+                :href="live.url"
+                target="_blank"
+                rel="nofollow noopener"
               >
+                ◥
+              </a>
             </span>
           </div>
-          <img
-            class="thumbnail"
-            :src="`https://img.youtube.com/vi/${live.hash}/mqdefault.jpg`"
-            alt=""
-          />
+          <span class="title">
+            <span v-if="live.title">{{ live.title }}</span>
+            <span v-else @click.stop="getLiveTitle(live.hash)">get title</span>
+          </span>
+          <div class="live-detail">
+            <img
+              class="thumbnail"
+              :src="`https://img.youtube.com/vi/${live.hash}/mqdefault.jpg`"
+              :alt="live.title"
+            />
+            <span class="is-streaming-text" v-if="live.isStreaming">LIVE</span>
+          </div>
         </li>
       </ul>
     </div>
@@ -91,7 +99,7 @@ export const clearHash = () => {
 
 export const controls = ref(1);
 export const showControls = () => (controls.value = 1);
-export const hideControls = () => (controls.value = 0);
+export const hideControls = () => (controls.value = 1);
 
 export const lives = reactive({});
 // export const hashList = ref<{member:string,hash:string,url:string,title?:string}[]>([]);
@@ -151,6 +159,8 @@ export const popup = (hash) =>
   right: 0;
   z-index: 10000000;
   font-size: 30px;
+  width: 30rem;
+  overflow: scroll;
 }
 .control-base {
   transition: 0.3s all ease-in-out;
@@ -162,17 +172,18 @@ export const popup = (hash) =>
   appearance: none;
 }
 .control input {
+  width: 15rem;
   color: #ccc;
   background-color: #333;
-  max-width: 50vw;
 }
 
 .control button {
   cursor: pointer;
 }
 .control-panel {
+  background-color: #333;
   display: grid;
-  grid-template-columns: 1fr auto auto auto auto;
+  grid-template-columns: auto auto auto auto auto;
 }
 
 .control button:hover {
@@ -193,19 +204,15 @@ export const popup = (hash) =>
 }
 .frame .frame-control {
   transition: 0.3s all ease-in-out;
-  opacity: 0;
+  opacity: 1;
   position: absolute;
   z-index: 1000000;
-  width: 50px;
   height: 50px;
   left: 0;
   top: 0;
   cursor: pointer;
   display: flex;
   width: fit-content;
-}
-.frame .frame-control {
-  opacity: 1;
 }
 
 .frame .close {
@@ -253,7 +260,8 @@ export const popup = (hash) =>
   height: 1.6rem;
   transition: 0.1s all ease-in-out;
   display: grid;
-  grid-template-columns: 3rem 8rem 8rem 1rem 1fr;
+  grid-template-columns: auto 8rem auto auto;
+  justify-content: space-between;
   gap: 1rem;
 }
 
@@ -266,10 +274,25 @@ export const popup = (hash) =>
   transition: 0.3s all ease-in-out;
   position: relative;
   background-color: #000;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.is-streaming {
+  border: 2px solid greenyellow;
+  border-radius: 1rem;
+}
+
+.is-streaming-text {
+  color: greenyellow;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  font-size: 2rem;
 }
 
 .live:hover {
-  background-color: #666;
+  background-color: #333;
 }
 
 .live:hover .thumbnail {
@@ -278,7 +301,12 @@ export const popup = (hash) =>
 }
 
 .start {
-  color: #ccc;
+  color: #000;
+  background-color: #fff;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  padding: 0 1rem;
 }
 
 .thumbnail {
@@ -289,15 +317,25 @@ export const popup = (hash) =>
   /* position: absolute; */
   /* top: 1.6rem; */
   /* left: clac(50% - 160px); */
-  width: 320px;
-  height: 180px;
+  width: 200px;
+  height: 100px;
   /* background-color: #000; */
   /* box-shadow: 0 0 3px #333; */
   /* z-index: 100000000; */
 }
 
+.live-detail {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
 .member {
   color: hotpink;
+  /* border-radius: 5px; */
+  /* background-color: hotpink; */
+  padding: 3px;
+  display: grid;
+  place-items: center;
 }
 .hash {
   color: skyblue;
@@ -307,7 +345,9 @@ export const popup = (hash) =>
 }
 .title {
   color: yellowgreen;
+  display: inline-block;
   cursor: pointer;
+  margin: 5px 0 10px;
 }
 a {
   color: inherit;
