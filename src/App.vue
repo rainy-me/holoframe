@@ -273,14 +273,14 @@ export const popup = (hash) =>
   cursor: pointer;
   transition: 0.3s all ease-in-out;
   position: relative;
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.6);
   margin-bottom: 1rem;
   padding: 1rem;
+  border-radius: 1rem;
 }
 
 .is-streaming {
   border: 2px solid greenyellow;
-  border-radius: 1rem;
 }
 
 .is-streaming-text {
