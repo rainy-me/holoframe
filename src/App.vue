@@ -99,7 +99,7 @@ export const clearHash = () => {
 
 export const controls = ref(1);
 export const showControls = () => (controls.value = 1);
-export const hideControls = () => (controls.value = 1);
+export const hideControls = () => (controls.value = 0);
 
 export const lives = reactive({});
 // export const hashList = ref<{member:string,hash:string,url:string,title?:string}[]>([]);
