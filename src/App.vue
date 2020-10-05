@@ -2,10 +2,11 @@
   <div>
     <div class="view" v-if="hashList.length">
       <div class="frame" v-for="(hash, i) in hashList" :key="hash">
-        <div class="close" @click="removeHash(i)">X</div>
+        <div class="frame-control">
+          <div class="close" @click="removeHash(i)">X</div>
+          <div class="comment" @click="popup(hash)">comment</div>
+        </div>
         <iframe
-          width="560"
-          height="315"
           :src="`https://www.youtube.com/embed/${hash}?autoplay=1`"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -106,6 +107,13 @@ export const getLiveTitle = async (hash) => {
 
 export const open = ref(true);
 export const toggleOpen = () => (open.value = !open.value);
+
+export const popup = (hash) =>
+  window.open(
+    `https://www.youtube.com/live_chat?v=${hash}`,
+    "popup",
+    "width=600,height=600"
+  );
 </script>
 
 <style scoped vars="{ size, controls }">
@@ -121,7 +129,7 @@ export const toggleOpen = () => (open.value = !open.value);
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 100;
+  z-index: 10000000;
   font-size: 30px;
 }
 .control-base {
@@ -160,25 +168,49 @@ export const toggleOpen = () => (open.value = !open.value);
 .frame {
   position: relative;
 }
-.frame .close {
+.frame .frame-control {
   transition: 0.3s all ease-in-out;
   opacity: 0;
   position: absolute;
-  z-index: 10;
+  z-index: 1000000;
+  width: 50px;
+  height: 50px;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+  display: flex;
+  width: fit-content;
+}
+.frame .frame-control {
+  opacity: 1;
+}
+
+.frame .close {
   width: 50px;
   height: 50px;
   display: grid;
   place-items: center;
   font-weight: bold;
-  left: 0;
-  top: 0;
   background-color: #fff;
   border: 3px solid #000;
   cursor: pointer;
 }
-.frame .close:hover {
-  opacity: 1;
+
+.frame .comment {
+  transition: 0.3s all ease-in-out;
+  width: 100px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  left: 50px;
+  top: 0;
+  color: #fff;
+  background-color: #000;
+  border: 1px solid #fff;
+  cursor: pointer;
 }
+
 .empty {
   width: 100vw;
   height: 100vh;
