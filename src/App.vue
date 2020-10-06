@@ -68,7 +68,12 @@
               :src="`https://img.youtube.com/vi/${live.hash}/mqdefault.jpg`"
               :alt="live.title"
             />
-            <span class="is-streaming-text" v-if="live.isStreaming">LIVE</span>
+            <span class="is-streaming-text" v-if="live.isStreaming">
+              LIVE
+              <small class="time-relative" v-if="live.isStreaming">
+                started {{ live.length }}
+              </small>
+            </span>
           </div>
         </li>
       </ul>
@@ -103,17 +108,50 @@ export const hideControls = () => (controls.value = 0);
 
 export const lives = reactive({});
 // export const hashList = ref<{member:string,hash:string,url:string,title?:string}[]>([]);
+
+const units = {
+  year: 24 * 60 * 60 * 1000 * 365,
+  month: (24 * 60 * 60 * 1000 * 365) / 12,
+  day: 24 * 60 * 60 * 1000,
+  hour: 60 * 60 * 1000,
+  minute: 60 * 1000,
+  second: 1000,
+};
+
+const getRelativeTime = (time) => {
+  const now = new Date();
+  const [date] = now.toISOString().split("T");
+  const start = +new Date(`${date}T${time}`);
+  let elapsed = now - start;
+  let timeString = [];
+  for (const u in units) {
+    if (Math.abs(elapsed) > units[u]) {
+      let count = Math.floor(elapsed / units[u]);
+      // timeString.push(`${count} ${u}${count > 1 ? "s" : ""}`);
+      timeString.push(`${count}`.padStart(2, "0"));
+      elapsed -= count * units[u];
+    }
+  }
+  return timeString.join(":") + " ago";
+};
+
 export const getLives = async () => {
   const res = await fetch("https://api.yue.coffee/api/v1/hololive");
   const { data, error } = await res.json();
   if (error) return;
   data.forEach((live) => {
     lives[live.hash] = live;
+    live.length = live.isStreaming ? getRelativeTime(live.start) : 0;
   });
 };
 
 onMounted(() => {
   getLives();
+  setInterval(() => {
+    Object.values(lives).forEach(({ hash, start, isStreaming }) => {
+      lives[hash].length = isStreaming ? getRelativeTime(start) : 0;
+    });
+  }, 1000);
 });
 
 export const getLiveTitle = async (hash) => {
@@ -348,6 +386,10 @@ export const popup = (hash) =>
   display: inline-block;
   cursor: pointer;
   margin: 5px 0 10px;
+}
+.time-relative {
+  font-size: 1rem;
+  color: #666;
 }
 a {
   color: inherit;
