@@ -23,11 +23,9 @@
           class="control-base"
           type="text"
           v-model="hashInput"
-          @keydown.enter="addHash"
+          @keydown.enter="addHash()"
         />
-        <button class="control-base add" @click="addHash(hashInput.value)">
-          add
-        </button>
+        <button class="control-base add" @click="addHash()">add</button>
         <button class="control-base clear" @click="clearHash">clear</button>
         <button class="control-base add" @click="toggleOpen">
           {{ open ? "▲" : "▼" }}
@@ -92,7 +90,7 @@ export const size = computed(() =>
 );
 
 export const addHash = (hash) => {
-  hashList.value.push(hash);
+  hashList.value.push(hash ?? hashInput.value);
   // popup(hash);
 };
 export const removeHash = (x) =>
