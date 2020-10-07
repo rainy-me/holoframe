@@ -80,9 +80,12 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted, watch, watchEffect } from "vue";
+const __holoframe__ = `__holoframe__`;
 export const hashInput = ref("");
-export const hashList = ref([]);
+export const hashList = ref(
+  JSON.parse(localStorage.getItem(__holoframe__)) ?? []
+);
 export const size = computed(() =>
   Array(Math.ceil(Math.sqrt(hashList.value.length)))
     .fill("1fr")
@@ -99,6 +102,12 @@ export const removeHash = (x) =>
 export const clearHash = () => {
   hashList.value = [];
 };
+
+watchEffect(() => {
+  const list = JSON.stringify(hashList.value);
+  console.log({ list });
+  localStorage.setItem(__holoframe__, list);
+});
 
 export const controls = ref(1);
 export const showControls = () => (controls.value = 1);
