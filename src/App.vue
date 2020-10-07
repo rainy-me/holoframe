@@ -249,7 +249,7 @@ export const popup = (hash) =>
 }
 .frame .frame-control {
   transition: 0.3s all ease-in-out;
-  opacity: 1;
+  opacity: 0;
   position: absolute;
   z-index: 1000000;
   height: 50px;
@@ -258,6 +258,10 @@ export const popup = (hash) =>
   cursor: pointer;
   display: flex;
   width: fit-content;
+}
+
+.frame-control:hover{
+  opacity: 1;
 }
 
 .frame .close {
