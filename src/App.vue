@@ -93,7 +93,7 @@ export const size = computed(() =>
 
 export const addHash = (hash) => {
   hashList.value.push(hash);
-  popup(hash);
+  // popup(hash);
 };
 export const removeHash = (x) =>
   (hashList.value = hashList.value.filter((_, y) => x !== y));
