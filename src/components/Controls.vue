@@ -7,9 +7,7 @@
         v-model="idInput"
         @keydown.enter="$emit('add', idInput.value)"
       />
-      <button class="base add" @click="$emit('add', idInput.value)">
-        add
-      </button>
+      <button class="base add" @click="$emit('add', idInput.value)">add</button>
       <button class="base clear" @click="$emit('clear')">clear</button>
       <button class="base add" @click="toggleOpen">
         {{ open ? "▲" : "▼" }}
@@ -20,9 +18,10 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import hStreamList from "./StreamList.vue";
+
 export default {
   components: {
     hStreamList,

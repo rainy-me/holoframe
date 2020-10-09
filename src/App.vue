@@ -3,7 +3,7 @@
   <h-controls @add="add" @clear="clear" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, watchEffect } from "vue";
 import hFrameGrid from "./components/FrameGrid.vue";
 import hControls from "./components/Controls.vue";
@@ -17,12 +17,14 @@ export default {
 
 const __holoframe__ = `__holoframe__`;
 
-export const ids = ref(JSON.parse(localStorage.getItem(__holoframe__)) ?? []);
+export const ids = ref<string[]>(
+  JSON.parse(localStorage.getItem(__holoframe__)) ?? []
+);
 
-export const add = (hash) => {
+export const add = (hash: string) => {
   ids.value.push(hash);
 };
-export const remove = (x) => {
+export const remove = (x: number) => {
   ids.value = ids.value.filter((_, y) => x !== y);
 };
 export const clear = () => {

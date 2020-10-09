@@ -38,10 +38,22 @@
   </ul>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { reactive, onMounted } from "vue";
 
-export const streams = reactive({});
+type Stream = {
+  member: string;
+  id: string;
+  url: string;
+  start: string;
+  timestamp: number;
+  isStreaming: boolean;
+} & {
+  title?: string;
+  length?: string;
+};
+
+export const streams = reactive<Record<string, Stream>>({});
 
 onMounted(() => {
   getStreams();
@@ -62,11 +74,12 @@ export const getStreams = async () => {
   });
 };
 
-const setLength = (stream) => {
-  stream.length = stream.isStreaming ? getRelativeTime(stream.timestamp) : 0;
+const setLength = (stream: Stream) => {
+  if (!stream.isStreaming) return;
+  stream.length = getRelativeTime(stream.timestamp);
 };
 
-export const getTitle = async (id) => {
+export const getTitle = async (id: string) => {
   streams[id].title = "⟳";
   const res = await fetch("https://api.yue.coffee/api/v1/page-title", {
     method: "post",
@@ -94,7 +107,7 @@ const units = {
 
 const getRelativeTime = (timestamp) => {
   let elapsed = Date.now() - timestamp;
-  let timeString = [];
+  let timeString: string[] = [];
   for (const u in units) {
     if (Math.abs(elapsed) > units[u]) {
       let count = Math.floor(elapsed / units[u]);

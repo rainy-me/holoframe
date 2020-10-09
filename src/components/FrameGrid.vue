@@ -18,10 +18,15 @@
   <p class="empty" v-else>No videos</p>
 </template>
 
-<script setup="props">
+<script lang="ts" setup="props">
 import { computed } from "vue";
+
 export default {
   props: ["ids"],
+};
+
+declare const props: {
+  ids: string[];
 };
 
 export const size = computed(() =>
@@ -30,7 +35,7 @@ export const size = computed(() =>
     .join(" ")
 );
 
-export const openComment = (id) =>
+export const openComment = (id: string) =>
   window.open(`https://www.youtube.com/live_chat?v=${id}`);
 </script>
 
