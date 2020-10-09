@@ -1,9 +1,10 @@
 <template>
   <ul class="list">
     <li
+      :ref="(el) => (refs[i] = el)"
       :class="['stream', { 'is-streaming': stream.isStreaming }]"
       @click="$emit('add', stream.id)"
-      v-for="stream in Object.values(streams)"
+      v-for="(stream, i) in Object.values(streams)"
       :key="stream.id"
     >
       <div class="content">
@@ -39,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, nextTick } from "vue";
 
 type Stream = {
   member: string;
@@ -54,9 +55,10 @@ type Stream = {
 };
 
 export const streams = reactive<Record<string, Stream>>({});
+export const refs = ref<HTMLLIElement[]>([]);
 
-onMounted(() => {
-  getStreams();
+onMounted(async () => {
+  await getStreams();
   setInterval(() => {
     Object.values(streams).forEach((stream) => {
       setLength(stream);
@@ -66,11 +68,20 @@ onMounted(() => {
 
 export const getStreams = async () => {
   const res = await fetch("https://api.yue.coffee/api/v1/hololive");
-  const { data, error } = await res.json();
+  const { data, error }: { data: Stream[]; error: any } = await res.json();
   if (error) return;
-  data.forEach((stream) => {
+  let firstStreamingSet = false;
+  data.forEach((stream, i) => {
     streams[stream.id] = stream;
     setLength(stream);
+    if (firstStreamingSet || !stream.isStreaming) return;
+    firstStreamingSet = true;
+    nextTick(() => {
+      console.log("scroll");
+      refs.value[i].scrollIntoView({
+        behavior: "smooth",
+      });
+    });
   });
 };
 

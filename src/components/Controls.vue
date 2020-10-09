@@ -14,7 +14,7 @@
       </button>
       <button class="base add" @click="$emit('refresh')">⟳</button>
     </div>
-    <h-stream-list v-if="open" @add="(hash) => $emit('add', hash)" />
+    <h-stream-list v-show="open" @add="(hash) => $emit('add', hash)" />
   </div>
 </template>
 
