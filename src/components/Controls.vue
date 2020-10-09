@@ -5,9 +5,9 @@
         class="base"
         type="text"
         v-model="idInput"
-        @keydown.enter="$emit('add', idInput.value)"
+        @keydown.enter="$emit('add', idInput)"
       />
-      <button class="base add" @click="$emit('add', idInput.value)">add</button>
+      <button class="base add" @click="$emit('add', idInput)">add</button>
       <button class="base clear" @click="$emit('clear')">clear</button>
       <button class="base add" @click="toggleOpen">
         {{ open ? "▲" : "▼" }}
