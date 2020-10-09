@@ -124,9 +124,9 @@ const getRelativeTime = (timestamp) => {
   gap: 1rem;
 }
 
-.content:hover {
-  /* background-color: #666; */
-}
+/* .content:hover { */
+/* background-color: #666; */
+/* } */
 
 .stream {
   cursor: pointer;
@@ -154,10 +154,10 @@ const getRelativeTime = (timestamp) => {
   background-color: #333;
 }
 
-.stream:hover .thumbnail {
-  /* opacity: 1; */
-  /* transform: translateY(0); */
-}
+/* .stream:hover .thumbnail {
+  opacity: 1;
+  transform: translateY(0);
+} */
 
 .start {
   color: #000;
