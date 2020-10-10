@@ -31,7 +31,7 @@
       <div class="detail">
         <img class="thumbnail" :src="stream.thumbnail" :alt="stream.title" />
         <span class="is-streaming-text" v-if="stream.isStreaming">
-          stream
+          LIVE
           <small class="time-relative"> started {{ stream.length }} </small>
         </span>
       </div>
