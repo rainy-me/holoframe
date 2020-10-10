@@ -107,7 +107,7 @@ export const getTitle = async (id: string) => {
   streams[id].title = data.title;
 };
 
-const units = {
+const units:Record<string,number> = {
   year: 24 * 60 * 60 * 1000 * 365,
   month: (24 * 60 * 60 * 1000 * 365) / 12,
   day: 24 * 60 * 60 * 1000,
@@ -116,7 +116,7 @@ const units = {
   second: 1000,
 };
 
-const getRelativeTime = (timestamp) => {
+const getRelativeTime = (timestamp:number) => {
   let elapsed = Date.now() - timestamp;
   let timeString: string[] = [];
   for (const u in units) {
