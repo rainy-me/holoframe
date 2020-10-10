@@ -39,7 +39,6 @@ export const toggleOpen = () => (open.value = !open.value);
 
 <style scoped vars="{ controls }">
 .control {
-  transition: 0.3s all ease-in-out;
   opacity: var(--controls);
   position: fixed;
   top: 0;
@@ -50,7 +49,6 @@ export const toggleOpen = () => (open.value = !open.value);
   overflow: scroll;
 }
 .base {
-  transition: 0.3s all ease-in-out;
   height: 40px;
   border: 0;
   outline: 0;

@@ -1,12 +1,11 @@
 <template>
   <div class="view" v-if="ids.length">
     <div class="frame" v-for="(id, i) in ids" :key="id">
-      <div class="frame-control">
+      <div class="control">
         <div class="close" @click="$emit('remove', i)">X</div>
         <div class="comment" @click="openComment(id)">comment</div>
-        <a :href="`https://www.youtube.com/watch?v=${id}`" target="_blank">
-          https://www.youtube.com/watch?v={{ id }}
-        </a>
+        <a class="link" :href="`https://www.youtube.com/watch?v=${id}`" target="_blank">
+Original        </a>
       </div>
       <iframe
         :src="`https://www.youtube.com/embed/${id}?autoplay=1`"
@@ -59,36 +58,45 @@ export const openComment = (id: string) =>
 .frame {
   position: relative;
 }
-.frame .frame-control {
-  transition: 0.3s all ease-in-out;
+.control {
   opacity: 0;
   position: absolute;
-  z-index: 1000000;
+  z-index: 20000000;
   height: 50px;
   left: 0;
   top: 0;
   cursor: pointer;
   display: flex;
   width: fit-content;
+  background-color: #000;
+  box-shadow: 0 0 1rem #ccc;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
-.frame-control:hover {
+.control:hover {
   opacity: 1;
 }
 
-.frame .close {
+.close {
   width: 50px;
   height: 50px;
   display: grid;
   place-items: center;
   font-weight: bold;
   background-color: #fff;
+  border-radius: 100%;
   border: 3px solid #000;
   cursor: pointer;
 }
+.close:hover{
+  background-color: red;
+  color: #fff;
+}
 
-.frame .comment {
-  transition: 0.3s all ease-in-out;
+.comment {
   width: 100px;
   height: 50px;
   display: grid;
@@ -97,8 +105,20 @@ export const openComment = (id: string) =>
   left: 50px;
   top: 0;
   color: #fff;
-  background-color: #000;
-  border: 1px solid #fff;
   cursor: pointer;
+  border-radius: 10px;
+}
+.comment:hover{
+  background-color: #333;
+}
+.link{
+  background-color:skyblue;
+  padding: 0 10px;
+  display: grid;
+  border-radius: 10px;
+  place-items: center;
+}
+.link:hover{
+  background-color:lightskyblue;
 }
 </style>

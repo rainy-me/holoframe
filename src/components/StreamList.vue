@@ -154,7 +154,6 @@ const getRelativeTime = (timestamp) => {
 
 .stream {
   cursor: pointer;
-  transition: 0.3s all ease-in-out;
   position: relative;
   background-color: rgba(0, 0, 0, 0.6);
   margin-bottom: 1rem;

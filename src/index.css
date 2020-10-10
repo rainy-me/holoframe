@@ -14,6 +14,7 @@ iframe {
 
 * {
   box-sizing: border-box;
+  transition: 0.3s all ease-in-out;
 }
 
 a {
