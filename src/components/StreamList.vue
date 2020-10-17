@@ -8,8 +8,10 @@
       :key="stream.id"
     >
       <div class="content">
-        <span class="start">{{ stream.start }}</span>
-        <span class="member">{{ stream.member }}</span>
+        <span class="start">
+          {{new Date(stream.startTime).toISOString().split('T')[0]}}
+        </span>
+        <span class="member">{{ stream.members[0].name }}</span>
         <span class="id">
           {{ stream.id }}
         </span>
@@ -42,15 +44,23 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, nextTick } from "vue";
 
-type Stream = {
-  member: string;
+export type Stream = {
+  members: {
+    id?: string | number;
+    name: string;
+    avatar?: string;
+    color?: string;
+  }[];
   id: string;
   url: string;
-  start: string;
-  timestamp: number;
-  isStreaming: boolean;
-} & {
+  thumbnail: string;
+  startTime: number;
+  endTime?: number;
+  isStreaming?: boolean;
   title?: string;
+  description?: string;
+  producer: "hololive" | "najisanji";
+}& {
   length?: string;
 };
 
@@ -67,7 +77,7 @@ onMounted(async () => {
 });
 
 export const getStreams = async () => {
-  const res = await fetch("https://api.yue.coffee/api/v1/hololive");
+  const res = await fetch("https://api.yue.coffee/api/tv/v1");
   const { data, error }: { data: Stream[]; error: any } = await res.json();
   if (error) return;
   let firstStreamingSet = false;
@@ -87,7 +97,7 @@ export const getStreams = async () => {
 
 const setLength = (stream: Stream) => {
   if (!stream.isStreaming) return;
-  stream.length = getRelativeTime(stream.timestamp);
+  stream.length = getRelativeTime(stream.startTime);
 };
 
 export const getTitle = async (id: string) => {
