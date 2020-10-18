@@ -44,8 +44,10 @@ export const toggleOpen = () => (open.value = !open.value);
   top: 0;
   right: 0;
   z-index: 10000000;
+  height: 100vh;
   font-size: 30px;
   width: 30rem;
+  max-width: 100vw;
   overflow: scroll;
 }
 .base {
@@ -71,6 +73,9 @@ export const toggleOpen = () => (open.value = !open.value);
 }
 
 .panel {
+  position: sticky;
+  top: 0;
+  z-index: 500;
   background-color: #333;
   display: grid;
   grid-template-columns: auto auto auto auto auto;

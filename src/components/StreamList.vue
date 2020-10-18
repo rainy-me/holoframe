@@ -9,12 +9,12 @@
     >
       <div class="content">
         <span class="start">
-          {{new Date(stream.startTime).toISOString().split('T')[0]}}
+          {{formatTime(stream.startTime)}}
         </span>
-        <span class="member">{{ stream.members[0].name }}</span>
-        <span class="id">
-          {{ stream.id }}
-        </span>
+        <span class="member" :style="{
+          '--member--color': stream.members[0].color ?? '#ccc'
+        }">{{ stream.members[0].name }}</span>
+        <span :class="['producer',producerMap[stream.producer]]">{{stream.producer}}</span>
         <span class="outlink">
           <a
             @click.stop
@@ -59,7 +59,7 @@ export type Stream = {
   isStreaming?: boolean;
   title?: string;
   description?: string;
-  producer: "hololive" | "najisanji";
+  producer: "Hololive" | "にじさんじ";
 }& {
   length?: string;
 };
@@ -139,11 +139,27 @@ const getRelativeTime = (timestamp:number) => {
   }
   return timeString.join(":") + " ago";
 };
+
+const intl =   new Intl.DateTimeFormat('default', {
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+})
+
+export const formatTime = (date:Date)=>{
+  return intl.format(date)
+}
+
+export const producerMap:Record<Stream['producer'],string>= {
+  Hololive: 'hololive',
+  'にじさんじ': 'nijisanji'
+}
+
 </script>
 
 <style scoped>
 .list {
-  max-height: 80vh;
   overflow: scroll;
   list-style: none;
   font-size: 1rem;
@@ -153,7 +169,7 @@ const getRelativeTime = (timestamp:number) => {
   height: 1.6rem;
   transition: 0.1s all ease-in-out;
   display: grid;
-  grid-template-columns: auto 8rem auto auto;
+  grid-template-columns: auto 1fr auto auto;
   justify-content: space-between;
   gap: 1rem;
 }
@@ -193,12 +209,11 @@ const getRelativeTime = (timestamp:number) => {
 } */
 
 .start {
-  color: #000;
-  background-color: #fff;
+  color: #fff;
+  /* background-color: #fff; */
   border-radius: 5px;
   display: grid;
   place-items: center;
-  padding: 0 1rem;
 }
 
 .thumbnail {
@@ -222,12 +237,15 @@ const getRelativeTime = (timestamp:number) => {
 }
 
 .member {
-  color: hotpink;
-  /* border-radius: 5px; */
-  /* background-color: hotpink; */
+  color: #000;
+  border-radius: 5px;
+  background-color: var(--member--color);
   padding: 3px;
   display: grid;
   place-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .id {
   color: skyblue;
@@ -244,5 +262,24 @@ const getRelativeTime = (timestamp:number) => {
 .time-relative {
   font-size: 1rem;
   color: #666;
+  text-align: center;
 }
+.producer{
+    display: grid;
+    place-items: center;
+    border-radius: 5px;
+    background: #eee;
+    color: rgb(48, 48, 48);
+    width: 6rem;
+}
+
+.hololive{
+      background: rgba(95,220,238);
+      color: rgb(48, 48, 48);
+}
+.nijisanji{
+      background: rgb(50,76,111);
+      color: #fff;
+}
+
 </style>
