@@ -2,7 +2,7 @@
 
 Refined stream watching experience.
 
-Live at [holoframe.yue.coffee](holoframe.yue.coffee)
+Live at [tv.yue.coffee](https:///tv.yue.coffee)
 
 ![](./screenshots/view-1.jpeg)
 ![](./screenshots/view-2.jpeg)
