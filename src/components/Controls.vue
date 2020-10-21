@@ -1,5 +1,5 @@
 <template>
-  <div class="control" @mouseover="showControls" @mouseleave="hideControls">
+  <div :class="["control", { 'hide': !open }]" @mouseover="showControls" @mouseleave="hideControls">
     <div class="panel">
       <input
         class="base"
@@ -88,5 +88,8 @@ export const toggleOpen = () => (open.value = !open.value);
 .clear {
   background-color: #333;
   color: palevioletred;
+}
+.hide{
+  height: max-content;
 }
 </style>

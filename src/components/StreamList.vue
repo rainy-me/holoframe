@@ -13,7 +13,9 @@
         </span>
         <span class="member" :style="{
           '--member--color': stream.members[0].color ?? '#ccc'
-        }">{{ stream.members[0].name }}</span>
+        }">
+          {{ stream.members[0].name }}
+        </span>
         <span :class="['producer',producerMap[stream.producer]]">{{stream.producer}}</span>
         <span class="outlink">
           <a
