@@ -7,7 +7,7 @@
 import { ref, watchEffect } from "vue";
 import hFrameGrid from "./components/FrameGrid.vue";
 import hControls from "./components/Controls.vue";
-
+import {getLocalData,setLocalData} from './utils'
 export default {
   components: {
     hFrameGrid,
@@ -17,9 +17,7 @@ export default {
 
 const __holoframe__ = `__holoframe__`;
 
-export const ids = ref<string[]>(
-  JSON.parse(localStorage.getItem(__holoframe__)) ?? []
-);
+export const ids = ref<string[]>(getLocalData('ids') ?? []);
 
 export const add = (hash: string) => {
   ids.value.push(hash);
@@ -32,8 +30,7 @@ export const clear = () => {
 };
 
 watchEffect(() => {
-  const data = JSON.stringify(ids.value);
-  localStorage.setItem(__holoframe__, data);
+  setLocalData('ids',ids.value)
 });
 </script>
 

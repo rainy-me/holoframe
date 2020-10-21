@@ -1,4 +1,18 @@
 <template>
+  <div class="filter">
+    <span class="member hololive">Hololive</span>
+    <span class="member nijisanji">にじさんじ</span>
+    <span 
+    class="member"
+    :style="{
+          '--member--color': member.show?(member.color ?? '#ccc'):''
+        }"
+    :key="member.name"
+    v-for="(member) in members"
+    >
+    {{member.name}}
+    </span>
+  </div>
   <ul class="list">
     <li
       :ref="(el) => (refs[i] = el)"
@@ -42,7 +56,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted, nextTick } from "vue";
+import { ref, reactive,watch, onMounted, nextTick } from "vue";
+import {getLocalData,setLocalData} from '../utils'
 
 export type Stream = {
   members: {
@@ -156,9 +171,37 @@ export const producerMap:Record<Stream['producer'],string>= {
   'にじさんじ': 'nijisanji'
 }
 
+type Member = {
+  show:boolean
+} & Stream['members'][number]
+
+export const members = ref<Member[]>([])
+
+watch(streams,(updates)=>{
+  let seen = new Set<string>()
+  members.value = Object.values(updates).map(u=>u.members[0]).reduce((acc,m)=>{
+    if (seen.has(m.name)) return acc
+    return [...acc,{...m,show:true}]
+  },[] as Member[])
+})
+
+export const toggleFilter =(name:string)=>{
+  const filters = getLocalData("filters") ??{}
+  filters[name] = !filters[name]
+  setLocalData("filters",filters)
+}
+
 </script>
 
 <style scoped>
+.filter{
+  background: #fff;
+  font-size: 1rem;
+  grid-template-columns: auto auto auto auto;
+  display: grid;
+  max-height: 10rem;
+  overflow: scroll;
+}
 .list {
   overflow: scroll;
   list-style: none;
@@ -237,6 +280,7 @@ export const producerMap:Record<Stream['producer'],string>= {
 }
 
 .member {
+  height: 1.6rem;
   color: #000;
   border-radius: 5px;
   background-color: var(--member--color);
