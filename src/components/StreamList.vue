@@ -1,28 +1,31 @@
 <template>
   <ul class="list">
     <li
+      v-for="(stream, i) in Object.values(streams)"
       :ref="(el) => (refs[i] = el)"
+      :key="stream.id"
       :class="['stream', { 'is-streaming': stream.isStreaming }]"
       @click="$emit('add', stream.id)"
-      v-for="(stream, i) in Object.values(streams)"
-      :key="stream.id"
     >
       <div class="content">
         <span class="start">
-          {{formatTime(stream.startTime)}}
+          {{ formatTime(stream.startTime) }}
         </span>
-        <span class="member" :style="{
-          '--member--color': stream.members[0].color ?? '#ccc'
-        }">
+        <span
+          class="member"
+          :style="{
+            '--member--color': stream.members[0].color ?? '#ccc'
+          }"
+        >
           {{ stream.members[0].name }}
         </span>
-        <span :class="['producer',producerMap[stream.producer]]">{{stream.producer}}</span>
+        <span :class="['producer',producerMap[stream.producer]]">{{ stream.producer }}</span>
         <span class="outlink">
           <a
-            @click.stop
             :href="stream.url"
             target="_blank"
             rel="nofollow noopener"
+            @click.stop
           >
             ◥
           </a>
@@ -30,11 +33,21 @@
       </div>
       <span class="title">
         <span v-if="stream.title">{{ stream.title }}</span>
-        <span v-else @click.stop="getTitle(stream.id)"> get title </span>
+        <span
+          v-else
+          @click.stop="getTitle(stream.id)"
+        > get title </span>
       </span>
       <div class="detail">
-        <img class="thumbnail" :src="stream.thumbnail" :alt="stream.title" />
-        <span class="is-streaming-text" v-if="stream.isStreaming">
+        <img
+          class="thumbnail"
+          :src="stream.thumbnail"
+          :alt="stream.title"
+        >
+        <span
+          v-if="stream.isStreaming"
+          class="is-streaming-text"
+        >
           LIVE
           <small class="time-relative"> started {{ stream.length }} </small>
         </span>

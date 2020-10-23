@@ -1,11 +1,32 @@
 <template>
-  <div class="view" v-if="ids.length">
-    <div class="frame" v-for="(id, i) in ids" :key="id">
+  <div
+    v-if="ids.length"
+    class="view"
+  >
+    <div
+      v-for="(id, i) in ids"
+      :key="id"
+      class="frame"
+    >
       <div class="control">
-        <div class="close" @click="$emit('remove', i)">X</div>
-        <div class="comment" @click="openComment(id)">comment</div>
-        <a class="link" :href="`https://www.youtube.com/watch?v=${id}`" target="_blank">
-Original        </a>
+        <div
+          class="close"
+          @click="$emit('remove', i)"
+        >
+          X
+        </div>
+        <div
+          class="comment"
+          @click="openComment(id)"
+        >
+          comment
+        </div>
+        <a
+          class="link"
+          :href="`https://www.youtube.com/watch?v=${id}`"
+          target="_blank"
+        >
+          Original        </a>
       </div>
       <iframe
         :src="`https://www.youtube.com/embed/${id}?autoplay=1`"
@@ -14,7 +35,12 @@ Original        </a>
       />
     </div>
   </div>
-  <p class="empty" v-else>No videos</p>
+  <p
+    v-else
+    class="empty"
+  >
+    No videos
+  </p>
 </template>
 
 <script lang="ts" setup="props">
@@ -22,6 +48,7 @@ import { computed } from "vue";
 
 export default {
   props: ["ids"],
+  emits: ["remove"],
 };
 
 declare const props: {

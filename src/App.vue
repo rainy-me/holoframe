@@ -1,6 +1,12 @@
 <template>
-  <h-frame-grid :ids="ids" @remove="remove" />
-  <h-controls @add="add" @clear="clear" />
+  <h-frame-grid
+    :ids="ids"
+    @remove="remove"
+  />
+  <h-controls
+    @add="add"
+    @clear="clear"
+  />
 </template>
 
 <script lang="ts" setup>

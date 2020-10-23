@@ -1,20 +1,45 @@
 <template>
-  <div :class="["control", { 'hide': !open }]" @mouseover="showControls" @mouseleave="hideControls">
+  <div
+    :class="['control', { 'hide': !open }]"
+    @mouseover="showControls"
+    @mouseleave="hideControls"
+  >
     <div class="panel">
       <input
+        v-model="idInput"
         class="base"
         type="text"
-        v-model="idInput"
         @keydown.enter="$emit('add', idInput)"
-      />
-      <button class="base add" @click="$emit('add', idInput)">add</button>
-      <button class="base clear" @click="$emit('clear')">clear</button>
-      <button class="base add" @click="toggleOpen">
+      >
+      <button
+        class="base add"
+        @click="$emit('add', idInput)"
+      >
+        add
+      </button>
+      <button
+        class="base clear"
+        @click="$emit('clear')"
+      >
+        clear
+      </button>
+      <button
+        class="base add"
+        @click="toggleOpen"
+      >
         {{ open ? "▲" : "▼" }}
       </button>
-      <button class="base add" @click="$emit('refresh')">⟳</button>
+      <button
+        class="base add"
+        @click="$emit('refresh')"
+      >
+        ⟳
+      </button>
     </div>
-    <h-stream-list v-show="open" @add="(hash) => $emit('add', hash)" />
+    <h-stream-list
+      v-show="open"
+      @add="(hash) => $emit('add', hash)"
+    />
   </div>
 </template>
 
@@ -26,6 +51,11 @@ export default {
   components: {
     hStreamList,
   },
+  emits:[
+    'add',
+    'clear',
+    'refresh'
+  ],
 };
 export const idInput = ref("");
 
