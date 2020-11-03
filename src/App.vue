@@ -24,7 +24,7 @@ export default {
 const __holoframe__ = `__holoframe__`;
 
 export const ids = ref<string[]>(
-  JSON.parse(localStorage.getItem(__holoframe__)) ?? []
+  JSON.parse(localStorage.getItem(__holoframe__) ?? "[]") ?? []
 );
 
 export const add = (hash: string) => {

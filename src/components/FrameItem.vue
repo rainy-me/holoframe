@@ -1,44 +1,47 @@
 <template>
   <div
-    v-if="ids.length"
-    class="view"
+    class="frame"
   >
-    <h-frame-item
-      v-for="id in ids"
-      :id="id"
-      :key="id"
-      class="frame"
-    />
+    <div class="control">
+      <div
+        class="close"
+        @click="$emit('remove', i)"
+      >
+        X
+      </div>
+      <div
+        class="comment"
+        @click="openComment(id)"
+      >
+        comment
+      </div>
+      <a
+        class="link"
+        :href="`https://www.youtube.com/watch?v=${id}`"
+        target="_blank"
+      >
+        Original        </a>
+    </div>
+    <div :id="id"/>
   </div>
-  <p
-    v-else
-    class="empty"
-  >
-    No videos
-  </p>
 </template>
 
 <script lang="ts" setup="props">
-import { computed } from "vue";
-import hFrameItem from "./FrameItem.vue";
+import { onMounted } from "vue";
+import { createIframe } from '../utils'
 
 export default {
-  components:{
-    hFrameItem
-  },
   props: ["ids"],
   emits: ["remove"],
 };
 
 declare const props: {
-  ids: string[];
+  id: string;
 };
 
-export const size = computed(() =>
-  Array(Math.ceil(Math.sqrt(props.ids.length)))
-    .fill("1fr")
-    .join(" ")
-);
+onMounted(()=>{
+  createIframe(props.id)
+})
 
 export const openComment = (id: string) =>
   window.open(`https://www.youtube.com/live_chat?v=${id}`);

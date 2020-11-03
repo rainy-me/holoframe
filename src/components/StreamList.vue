@@ -59,6 +59,8 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, nextTick } from "vue";
 
+export default {}
+
 export type Stream = {
   members: {
     id?: string | number;
