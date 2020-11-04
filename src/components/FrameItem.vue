@@ -1,47 +1,55 @@
 <template>
-  <div
-    class="frame"
-  >
+  <div class="frame">
     <div class="control">
-      <div
-        class="close"
-        @click="$emit('remove', i)"
-      >
-        X
-      </div>
-      <div
-        class="comment"
-        @click="openComment(id)"
-      >
-        comment
-      </div>
+      <div class="close" @click="removeStream(id)">X</div>
+      <div class="comment" @click="openComment(id)">comment</div>
+      <div class="mute" @click="focusMute(id)">🎧</div>
       <a
         class="link"
         :href="`https://www.youtube.com/watch?v=${id}`"
         target="_blank"
       >
-        Original        </a>
+        Original
+      </a>
     </div>
-    <div :id="id"/>
+    <div :id="id" />
   </div>
 </template>
 
 <script lang="ts" setup="props">
-import { onMounted } from "vue";
-import { createIframe } from '../utils'
+import { onMounted, watch } from "vue";
+import { useState } from "../store";
+import { createIframe } from "../utils";
 
 export default {
-  props: ["ids"],
-  emits: ["remove"],
+  props: ["id", "muted"],
 };
 
 declare const props: {
   id: string;
+  muted: boolean;
 };
 
-onMounted(()=>{
-  createIframe(props.id)
-})
+// eslint-disable-next-line no-undef
+let player = null as null | YT.Player;
+
+onMounted(() => {
+  player = createIframe(props.id);
+});
+
+watch(
+  () => props.muted,
+  () => {
+    if (!player) return;
+    if (props.muted) {
+      player.mute();
+    } else {
+      player.unMute();
+    }
+  }
+);
+
+export const { removeStream, focusMute } = useState();
 
 export const openComment = (id: string) =>
   window.open(`https://www.youtube.com/live_chat?v=${id}`);
@@ -100,7 +108,7 @@ export const openComment = (id: string) =>
   border: 3px solid #000;
   cursor: pointer;
 }
-.close:hover{
+.close:hover {
   background-color: red;
   color: #fff;
 }
@@ -117,17 +125,29 @@ export const openComment = (id: string) =>
   cursor: pointer;
   border-radius: 10px;
 }
-.comment:hover{
+.comment:hover {
   background-color: #333;
 }
-.link{
-  background-color:skyblue;
+
+.mute {
+  display: grid;
+  place-items: center;
+  margin: 0 5px;
+  padding: 0 5px;
+  border-radius: 10px;
+}
+.mute:hover {
+  background-color: #333;
+}
+
+.link {
+  background-color: skyblue;
   padding: 0 10px;
   display: grid;
   border-radius: 10px;
   place-items: center;
 }
-.link:hover{
-  background-color:lightskyblue;
+.link:hover {
+  background-color: lightskyblue;
 }
 </style>

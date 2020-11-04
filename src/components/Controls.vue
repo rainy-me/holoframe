@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['control', { 'hide': !open }]"
+    :class="['control', { hide: !open }]"
     @mouseover="showControls"
     @mouseleave="hideControls"
   >
@@ -9,53 +9,30 @@
         v-model="idInput"
         class="base"
         type="text"
-        @keydown.enter="$emit('add', idInput)"
-      >
-      <button
-        class="base add"
-        @click="$emit('add', idInput)"
-      >
-        add
-      </button>
-      <button
-        class="base clear"
-        @click="$emit('clear')"
-      >
-        clear
-      </button>
-      <button
-        class="base add"
-        @click="toggleOpen"
-      >
+        @keydown.enter="addStream(idInput)"
+      />
+      <button class="base add" @click="addStream(idInput)">add</button>
+      <button class="base clear" @click="clearStreams()">clear</button>
+      <button class="base add" @click="toggleOpen">
         {{ open ? "▲" : "▼" }}
       </button>
-      <button
-        class="base add"
-        @click="$emit('refresh')"
-      >
-        ⟳
+      <button class="base add" @click="toggleMuteAll()">
+        {{ muted ? "🔉" : "🔇" }}
       </button>
     </div>
-    <h-stream-list
-      v-show="open"
-      @add="(hash) => $emit('add', hash)"
-    />
+    <h-stream-list v-show="open" @add="(hash) => addStream(hash)" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import { useState } from "../store";
 import hStreamList from "./StreamList.vue";
 
 export default {
   components: {
     hStreamList,
   },
-  emits:[
-    'add',
-    'clear',
-    'refresh'
-  ],
 };
 export const idInput = ref("");
 
@@ -65,6 +42,7 @@ export const hideControls = () => (controls.value = 0);
 
 export const open = ref(true);
 export const toggleOpen = () => (open.value = !open.value);
+export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
 </script>
 
 <style scoped vars="{ controls }">
@@ -119,7 +97,7 @@ export const toggleOpen = () => (open.value = !open.value);
   background-color: #333;
   color: palevioletred;
 }
-.hide{
+.hide {
   height: max-content;
 }
 </style>

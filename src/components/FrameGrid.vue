@@ -1,41 +1,32 @@
 <template>
-  <div
-    v-if="ids.length"
-    class="view"
-  >
+  <div v-if="streamIds.length" class="view">
     <h-frame-item
-      v-for="id in ids"
-      :id="id"
-      :key="id"
+      v-for="stream in streams"
+      :id="stream.id"
+      :key="stream.id"
+      :muted="stream.muted"
       class="frame"
     />
   </div>
-  <p
-    v-else
-    class="empty"
-  >
-    No videos
-  </p>
+  <p v-else class="empty">No videos</p>
 </template>
 
 <script lang="ts" setup="props">
 import { computed } from "vue";
+import { useState } from "../store";
 import hFrameItem from "./FrameItem.vue";
 
 export default {
-  components:{
-    hFrameItem
+  components: {
+    hFrameItem,
   },
-  props: ["ids"],
   emits: ["remove"],
 };
 
-declare const props: {
-  ids: string[];
-};
+export const { streams, streamIds } = useState();
 
 export const size = computed(() =>
-  Array(Math.ceil(Math.sqrt(props.ids.length)))
+  Array(Math.ceil(Math.sqrt(streamIds.value.length)))
     .fill("1fr")
     .join(" ")
 );
@@ -97,7 +88,7 @@ export const openComment = (id: string) =>
   border: 3px solid #000;
   cursor: pointer;
 }
-.close:hover{
+.close:hover {
   background-color: red;
   color: #fff;
 }
@@ -114,17 +105,17 @@ export const openComment = (id: string) =>
   cursor: pointer;
   border-radius: 10px;
 }
-.comment:hover{
+.comment:hover {
   background-color: #333;
 }
-.link{
-  background-color:skyblue;
+.link {
+  background-color: skyblue;
   padding: 0 10px;
   display: grid;
   border-radius: 10px;
   place-items: center;
 }
-.link:hover{
-  background-color:lightskyblue;
+.link:hover {
+  background-color: lightskyblue;
 }
 </style>

@@ -5,8 +5,9 @@
       :ref="(el) => (refs[i] = el)"
       :key="stream.id"
       :class="['stream', { 'is-streaming': stream.isStreaming }]"
-      @click="$emit('add', stream.id)"
+      @click="addStream(stream.id)"
     >
+      s
       <div class="content">
         <span class="start">
           {{ formatTime(stream.startTime) }}
@@ -14,12 +15,14 @@
         <span
           class="member"
           :style="{
-            '--member--color': stream.members[0].color ?? '#ccc'
+            '--member--color': stream.members[0].color ?? '#ccc',
           }"
         >
           {{ stream.members[0].name }}
         </span>
-        <span :class="['producer',producerMap[stream.producer]]">{{ stream.producer }}</span>
+        <span :class="['producer', producerMap[stream.producer]]">{{
+          stream.producer
+        }}</span>
         <span class="outlink">
           <a
             :href="stream.url"
@@ -33,21 +36,11 @@
       </div>
       <span class="title">
         <span v-if="stream.title">{{ stream.title }}</span>
-        <span
-          v-else
-          @click.stop="getTitle(stream.id)"
-        > get title </span>
+        <span v-else @click.stop="getTitle(stream.id)"> get title </span>
       </span>
       <div class="detail">
-        <img
-          class="thumbnail"
-          :src="stream.thumbnail"
-          :alt="stream.title"
-        >
-        <span
-          v-if="stream.isStreaming"
-          class="is-streaming-text"
-        >
+        <img class="thumbnail" :src="stream.thumbnail" :alt="stream.title" />
+        <span v-if="stream.isStreaming" class="is-streaming-text">
           LIVE
           <small class="time-relative"> started {{ stream.length }} </small>
         </span>
@@ -56,10 +49,11 @@
   </ul>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup="{ root }">
 import { ref, reactive, onMounted, nextTick } from "vue";
+import { useState } from "../store";
 
-export default {}
+export default {};
 
 export type Stream = {
   members: {
@@ -77,12 +71,13 @@ export type Stream = {
   title?: string;
   description?: string;
   producer: "Hololive" | "にじさんじ";
-}& {
+} & {
   length?: string;
 };
 
 export const streams = reactive<Record<string, Stream>>({});
 export const refs = ref<HTMLLIElement[]>([]);
+export const { addStream } = useState();
 
 onMounted(async () => {
   await getStreams();
@@ -134,7 +129,7 @@ export const getTitle = async (id: string) => {
   streams[id].title = data.title;
 };
 
-const units:Record<string,number> = {
+const units: Record<string, number> = {
   year: 24 * 60 * 60 * 1000 * 365,
   month: (24 * 60 * 60 * 1000 * 365) / 12,
   day: 24 * 60 * 60 * 1000,
@@ -143,7 +138,7 @@ const units:Record<string,number> = {
   second: 1000,
 };
 
-const getRelativeTime = (timestamp:number) => {
+const getRelativeTime = (timestamp: number) => {
   let elapsed = Date.now() - timestamp;
   let timeString: string[] = [];
   for (const u in units) {
@@ -157,22 +152,21 @@ const getRelativeTime = (timestamp:number) => {
   return timeString.join(":") + " ago";
 };
 
-const intl =   new Intl.DateTimeFormat('default', {
-  month: 'numeric',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-})
+const intl = new Intl.DateTimeFormat("default", {
+  month: "numeric",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+});
 
-export const formatTime = (date:Date)=>{
-  return intl.format(date)
-}
+export const formatTime = (date: Date) => {
+  return intl.format(date);
+};
 
-export const producerMap:Record<Stream['producer'],string>= {
-  Hololive: 'hololive',
-  'にじさんじ': 'nijisanji'
-}
-
+export const producerMap: Record<Stream["producer"], string> = {
+  Hololive: "hololive",
+  にじさんじ: "nijisanji",
+};
 </script>
 
 <style scoped>
@@ -281,22 +275,21 @@ export const producerMap:Record<Stream['producer'],string>= {
   color: #666;
   text-align: center;
 }
-.producer{
-    display: grid;
-    place-items: center;
-    border-radius: 5px;
-    background: #eee;
-    color: rgb(48, 48, 48);
-    width: 6rem;
+.producer {
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  background: #eee;
+  color: rgb(48, 48, 48);
+  width: 6rem;
 }
 
-.hololive{
-      background: rgba(95,220,238);
-      color: rgb(48, 48, 48);
+.hololive {
+  background: rgba(95, 220, 238);
+  color: rgb(48, 48, 48);
 }
-.nijisanji{
-      background: rgb(50,76,111);
-      color: #fff;
+.nijisanji {
+  background: rgb(50, 76, 111);
+  color: #fff;
 }
-
 </style>
