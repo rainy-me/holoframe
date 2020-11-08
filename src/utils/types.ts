@@ -22,3 +22,5 @@ export type StreamItem = {
   id: string;
   muted: boolean;
 };
+
+export type VTB = { nameJP: string; nameEN: string; check: boolean };

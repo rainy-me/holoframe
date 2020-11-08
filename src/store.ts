@@ -1,26 +1,20 @@
-import { ref, watchEffect, inject, computed } from "vue";
-import { StreamItem } from "@/utils";
+import { ref, reactive, watchEffect, inject, computed } from "vue";
+import { VTB, StreamItem, streamStorage, vtbStorage } from "./utils";
 
-const __holoframe__ = `__holoframe__`;
-
-const savedStreams: StreamItem[] =
-  JSON.parse(localStorage.getItem(__holoframe__) ?? "[]") ?? [];
-
-export const stateSymbol = Symbol(__holoframe__);
+export const stateSymbol = Symbol(`__holoframe__`);
 
 export const createStore = () => {
-  const streams = ref<StreamItem[]>(savedStreams);
+  const streams = ref<StreamItem[]>(streamStorage.get());
   const streamIds = computed(() => streams.value.map((s) => s.id));
 
+  const muted = ref(false);
+  const vtbs = reactive<Record<string, VTB>>(vtbStorage.get());
+
   watchEffect(() => {
-    const data = JSON.stringify(streams.value);
-    localStorage.setItem(__holoframe__, data);
+    streamStorage.set(streams.value);
   });
 
-  const muted = ref(false);
-
   return {
-    muted,
     streams,
     streamIds,
     addStream(id: string) {
@@ -32,6 +26,7 @@ export const createStore = () => {
     clearStreams() {
       streams.value = [];
     },
+    muted,
     toggleMuteAll() {
       muted.value = !muted.value;
       streams.value = streams.value.map((x) => ({ ...x, muted: muted.value }));
@@ -40,6 +35,22 @@ export const createStore = () => {
       streams.value = streams.value.map((x) => {
         return { ...x, muted: x.id !== id };
       });
+    },
+    vtbs,
+    // setvtbs(names: string[]) {
+    //   names.forEach((name) => {
+    //     if (!vtbs[name]) return;
+    //     vtbs[name].check = false;
+    //   });
+    //   vtbStorage.set(vtbs);
+    // },
+    getCheckedVtbs() {
+      return Object.keys(vtbs).filter((k) => vtbs[k].check);
+    },
+    toggleVtb(name: string) {
+      if (vtbs[name] === undefined) return;
+      vtbs[name].check = !vtbs[name].check;
+      vtbStorage.set(vtbs);
     },
   };
 };

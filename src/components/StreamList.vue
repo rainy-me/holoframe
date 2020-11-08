@@ -1,83 +1,72 @@
 <template>
-  <ul class="list">
-    <li
-      v-for="(stream, i) in Object.values(streams)"
-      :ref="(el) => (refs[i] = el)"
-      :key="stream.id"
-      :class="['stream', { 'is-streaming': stream.isStreaming }]"
-      @click="addStream(stream.id)"
-    >
-      s
-      <div class="content">
-        <span class="start">
-          {{ formatTime(stream.startTime) }}
-        </span>
-        <span
-          class="member"
-          :style="{
-            '--member--color': stream.members[0].color ?? '#ccc',
-          }"
-        >
-          {{ stream.members[0].name }}
-        </span>
-        <span :class="['producer', producerMap[stream.producer]]">{{
-          stream.producer
-        }}</span>
-        <span class="outlink">
-          <a
-            :href="stream.url"
-            target="_blank"
-            rel="nofollow noopener"
-            @click.stop
+  <div class="list">
+    <vtb-list />
+    <ul class="stream-list">
+      <li
+        v-for="(stream, i) in Object.values(streams)"
+        :ref="(el) => (refs[i] = el)"
+        :key="stream.id"
+        :class="['stream', { 'is-streaming': stream.isStreaming }]"
+        :tabindex="i"
+        @click="addStream(stream.id)"
+      >
+        <div class="content">
+          <span class="start">
+            {{ formatTime(stream.startTime) }}
+          </span>
+          <span
+            class="member"
+            :style="{
+              '--member--color': stream.members[0].color ?? '#ccc',
+            }"
           >
-            ◥
-          </a>
+            {{ stream.members[0].name }}
+          </span>
+          <span :class="['producer', producerMap[stream.producer]]">{{
+            stream.producer
+          }}</span>
+          <span class="outlink">
+            <a
+              :href="stream.url"
+              target="_blank"
+              rel="nofollow noopener"
+              @click.stop
+            >
+              ◥
+            </a>
+          </span>
+        </div>
+        <span class="title">
+          <span v-if="stream.title">{{ stream.title }}</span>
+          <span v-else @click.stop="getTitle(stream.id)"> get title </span>
         </span>
-      </div>
-      <span class="title">
-        <span v-if="stream.title">{{ stream.title }}</span>
-        <span v-else @click.stop="getTitle(stream.id)"> get title </span>
-      </span>
-      <div class="detail">
-        <img class="thumbnail" :src="stream.thumbnail" :alt="stream.title" />
-        <span v-if="stream.isStreaming" class="is-streaming-text">
-          LIVE
-          <small class="time-relative"> started {{ stream.length }} </small>
-        </span>
-      </div>
-    </li>
-  </ul>
+        <div class="detail">
+          <img class="thumbnail" :src="stream.thumbnail" :alt="stream.title" />
+          <span v-if="stream.isStreaming" class="is-streaming-text">
+            LIVE
+            <small class="time-relative"> started {{ stream.length }} </small>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script lang="ts" setup="{ root }">
-import { ref, reactive, onMounted, nextTick } from "vue";
+import { ref, reactive, onMounted, nextTick, watch } from "vue";
+import type { Stream } from "@/utils";
 import { useState } from "../store";
+import vtbList from "./VtbList.vue";
 
-export default {};
-
-export type Stream = {
-  members: {
-    id?: string | number;
-    name: string;
-    avatar?: string;
-    color?: string;
-  }[];
-  id: string;
-  url: string;
-  thumbnail: string;
-  startTime: number;
-  endTime?: number;
-  isStreaming?: boolean;
-  title?: string;
-  description?: string;
-  producer: "Hololive" | "にじさんじ";
-} & {
-  length?: string;
+export default {
+  components: {
+    vtbList,
+  },
 };
 
-export const streams = reactive<Record<string, Stream>>({});
+export let streams = reactive<Record<string, Stream>>({});
 export const refs = ref<HTMLLIElement[]>([]);
-export const { addStream } = useState();
+export const { addStream, getCheckedVtbs } = useState();
 
 onMounted(async () => {
   await getStreams();
@@ -89,7 +78,24 @@ onMounted(async () => {
 });
 
 export const getStreams = async () => {
-  const res = await fetch("https://api.yue.coffee/api/tv/v1");
+  const checkedvtbs = getCheckedVtbs();
+  Object.keys(streams).forEach((k) => {
+    if (checkedvtbs.includes(k)) return;
+    delete streams[k];
+  });
+
+  if (!checkedvtbs.length) {
+    // streams = {}
+    return;
+  }
+  const res = await fetch("https://api.yue.coffee/api/tv/v1.1", {
+    method: "post",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(checkedvtbs),
+  });
   const { data, error }: { data: Stream[]; error: any } = await res.json();
   if (error) return;
   let firstStreamingSet = false;
@@ -99,13 +105,16 @@ export const getStreams = async () => {
     if (firstStreamingSet || !stream.isStreaming) return;
     firstStreamingSet = true;
     nextTick(() => {
-      console.log("scroll");
       refs.value[i].scrollIntoView({
         behavior: "smooth",
       });
     });
   });
 };
+
+watch(getCheckedVtbs, () => {
+  getStreams();
+});
 
 const setLength = (stream: Stream) => {
   if (!stream.isStreaming) return;
@@ -171,10 +180,14 @@ export const producerMap: Record<Stream["producer"], string> = {
 
 <style scoped>
 .list {
+  margin: 0 1rem;
+}
+.stream-list {
   overflow: scroll;
   list-style: none;
   font-size: 1rem;
   padding: 0;
+  margin: 1rem 0;
 }
 .content {
   height: 1.6rem;
