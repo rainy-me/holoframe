@@ -103,7 +103,7 @@ export const searchColor = computed(() =>
   outline: none;
   color: #fff;
   padding: 3px 5px;
-  border: 2px skyblue #ccc;
+  border: 2px #ccc solid;
 }
 .search:hover {
   border: 2px skyblue solid;
