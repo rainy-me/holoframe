@@ -3,7 +3,7 @@
     <vtb-list />
     <ul class="stream-list">
       <li
-        v-for="(stream, i) in Object.values(streams)"
+        v-for="(stream, i) in Object.values(streamRecords)"
         :ref="(el) => (refs[i] = el)"
         :key="stream.id"
         :class="['stream', { 'is-streaming': stream.isStreaming }]"
@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts" setup="{ root }">
-import { ref, reactive, onMounted, nextTick, watch } from "vue";
+import { ref, onMounted, watch, nextTick } from "vue";
 import type { Stream } from "@/utils";
 import { useState } from "../store";
 import vtbList from "./VtbList.vue";
@@ -64,102 +64,42 @@ export default {
   },
 };
 
-export let streams = reactive<Record<string, Stream>>({});
 export const refs = ref<HTMLLIElement[]>([]);
-export const { addStream, getCheckedVtbs } = useState();
+export const {
+  streamRecords,
+  addStream,
+  fetchStreams,
+  updateStreamTime,
+  getCheckedVtbs,
+} = useState();
 
 onMounted(async () => {
-  await getStreams();
+  await fetchStreams();
   setInterval(() => {
-    Object.values(streams).forEach((stream) => {
-      setLength(stream);
-    });
+    updateStreamTime();
   }, 1000);
 });
 
-export const getStreams = async () => {
-  const checkedvtbs = getCheckedVtbs();
-  Object.keys(streams).forEach((k) => {
-    if (checkedvtbs.includes(k)) return;
-    delete streams[k];
-  });
-
-  if (!checkedvtbs.length) {
-    // streams = {}
-    return;
-  }
-  const res = await fetch("https://api.yue.coffee/api/tv/v1.1", {
-    method: "post",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(checkedvtbs),
-  });
-  const { data, error }: { data: Stream[]; error: any } = await res.json();
-  if (error) return;
-  let firstStreamingSet = false;
-  data.forEach((stream, i) => {
-    streams[stream.id] = stream;
-    setLength(stream);
-    if (firstStreamingSet || !stream.isStreaming) return;
-    firstStreamingSet = true;
+watch(
+  () => streamRecords,
+  () => {
+    let firstStreamingIndex: null | number = null;
+    let i = 0;
+    for (const data of Object.values(streamRecords)) {
+      if (data.isStreaming) {
+        firstStreamingIndex = i;
+        break;
+      }
+      i++;
+    }
+    if (!firstStreamingIndex) return;
     nextTick(() => {
-      refs.value[i].scrollIntoView({
+      refs.value[firstStreamingIndex as number].scrollIntoView({
         behavior: "smooth",
       });
     });
-  });
-};
-
-watch(getCheckedVtbs, () => {
-  getStreams();
-});
-
-const setLength = (stream: Stream) => {
-  if (!stream.isStreaming) return;
-  stream.length = getRelativeTime(stream.startTime);
-};
-
-export const getTitle = async (id: string) => {
-  streams[id].title = "⟳";
-  const res = await fetch("https://api.yue.coffee/api/v1/page-title", {
-    method: "post",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      url: `https://www.youtube.com/watch?v=${id}`,
-    }),
-  });
-  const { data, error } = await res.json();
-  if (error) return;
-  streams[id].title = data.title;
-};
-
-const units: Record<string, number> = {
-  year: 24 * 60 * 60 * 1000 * 365,
-  month: (24 * 60 * 60 * 1000 * 365) / 12,
-  day: 24 * 60 * 60 * 1000,
-  hour: 60 * 60 * 1000,
-  minute: 60 * 1000,
-  second: 1000,
-};
-
-const getRelativeTime = (timestamp: number) => {
-  let elapsed = Date.now() - timestamp;
-  let timeString: string[] = [];
-  for (const u in units) {
-    if (Math.abs(elapsed) > units[u]) {
-      let count = Math.floor(elapsed / units[u]);
-      // timeString.push(`${count} ${u}${count > 1 ? "s" : ""}`);
-      timeString.push(`${count}`.padStart(2, "0"));
-      elapsed -= count * units[u];
-    }
   }
-  return timeString.join(":") + " ago";
-};
+);
 
 const intl = new Intl.DateTimeFormat("default", {
   month: "numeric",

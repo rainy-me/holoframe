@@ -13,6 +13,7 @@
         {{ showSearch ? "hideSearch" : "showSearch" }}
       </button>
     </li>
+    <li><button class="refetch" @click.stop="fetchStreams">refetch</button></li>
   </ul>
   <div v-show="showSearch">
     <input
@@ -41,7 +42,7 @@ import { useState } from "../store";
 
 export default {};
 
-export const { vtbs, toggleVtb } = useState();
+export const { vtbs, toggleVtb, fetchStreams } = useState();
 export const searchString = ref("");
 export const allVtbs = computed(() => Object.entries(vtbs).map(([, v]) => v));
 
@@ -117,5 +118,15 @@ export const searchColor = computed(() =>
   cursor: pointer;
   display: block;
   color: var(--searchColor);
+}
+.refetch {
+  width: 100%;
+  appearance: none;
+  border: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: aquamarine;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: block;
 }
 </style>

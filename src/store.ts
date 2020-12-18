@@ -1,10 +1,11 @@
 import { ref, reactive, watchEffect, inject, computed } from "vue";
-import { VTB, StreamItem, streamStorage, vtbStorage } from "./utils";
+import { VTB, Stream, StreamItem, streamStorage, vtbStorage } from "./utils";
 
 export const stateSymbol = Symbol(`__holoframe__`);
 
 export const createStore = () => {
   const streams = ref<StreamItem[]>(streamStorage.get());
+  const streamRecords = reactive<Record<string, Stream>>({});
   const streamIds = computed(() => streams.value.map((s) => s.id));
 
   const muted = ref(false);
@@ -14,44 +15,130 @@ export const createStore = () => {
     streamStorage.set(streams.value);
   });
 
+  const addStream = (id: string) => {
+    streams.value.push({ id, muted: muted.value });
+  };
+
+  async function fetchStreams() {
+    console.log("???");
+    const vtbs = getCheckedVtbs();
+    Object.keys(streamRecords).forEach((k) => {
+      if (vtbs.includes(k)) return;
+      delete streamRecords[k];
+    });
+
+    if (!vtbs.length) {
+      // streamRecords = {}
+      return;
+    }
+    const res = await fetch("https://api.yue.coffee/api/tv/v1.1", {
+      method: "post",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(vtbs),
+    });
+    const { data, error }: { data: Stream[]; error: any } = await res.json();
+    if (error) return;
+    data.forEach((stream) => {
+      stream.length = getRelativeTime(stream.startTime);
+      streamRecords[stream.id] = stream;
+    });
+  }
+  async function fetchTitle(id: string) {
+    streamRecords[id].title = "⟳";
+    const res = await fetch("https://api.yue.coffee/api/v1/page-title", {
+      method: "post",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        url: `https://www.youtube.com/watch?v=${id}`,
+      }),
+    });
+    const { data, error } = await res.json();
+    if (error) return;
+    streamRecords[id].title = data.title;
+  }
+  const units: Record<string, number> = {
+    year: 24 * 60 * 60 * 1000 * 365,
+    month: (24 * 60 * 60 * 1000 * 365) / 12,
+    day: 24 * 60 * 60 * 1000,
+    hour: 60 * 60 * 1000,
+    minute: 60 * 1000,
+    second: 1000,
+  };
+
+  const getRelativeTime = (timestamp: number) => {
+    let elapsed = Date.now() - timestamp;
+    let timeString: string[] = [];
+    for (const u in units) {
+      if (Math.abs(elapsed) > units[u]) {
+        let count = Math.floor(elapsed / units[u]);
+        // timeString.push(`${count} ${u}${count > 1 ? "s" : ""}`);
+        timeString.push(`${count}`.padStart(2, "0"));
+        elapsed -= count * units[u];
+      }
+    }
+    return timeString.join(":") + " ago";
+  };
+
+  function updateStreamTime() {
+    Object.values(streamRecords).forEach((stream) => {
+      if (!stream.isStreaming) return;
+      stream.length = getRelativeTime(stream.startTime);
+    });
+  }
+  function removeStream(id: string) {
+    streams.value = streams.value.filter((x) => x.id !== id);
+  }
+  function clearStreams() {
+    streams.value = [];
+  }
+  function toggleMuteAll() {
+    muted.value = !muted.value;
+    streams.value = streams.value.map((x) => ({ ...x, muted: muted.value }));
+  }
+  function focusMute(id: string) {
+    streams.value = streams.value.map((x) => {
+      return { ...x, muted: x.id !== id };
+    });
+  }
+  // setvtbs(names: string[]) {
+  //   names.forEach((name) => {
+  //     if (!vtbs[name]) return;
+  //     vtbs[name].check = false;
+  //   });
+  //   vtbStorage.set(vtbs);
+  // },
+  function getCheckedVtbs() {
+    return Object.keys(vtbs).filter((k) => vtbs[k].check);
+  }
+  function toggleVtb(name: string) {
+    if (vtbs[name] === undefined) return;
+    vtbs[name].check = !vtbs[name].check;
+    vtbStorage.set(vtbs);
+    fetchStreams();
+  }
+
   return {
+    muted,
+    vtbs,
     streams,
     streamIds,
-    addStream(id: string) {
-      streams.value.push({ id, muted: muted.value });
-    },
-    removeStream(id: string) {
-      streams.value = streams.value.filter((x) => x.id !== id);
-    },
-    clearStreams() {
-      streams.value = [];
-    },
-    muted,
-    toggleMuteAll() {
-      muted.value = !muted.value;
-      streams.value = streams.value.map((x) => ({ ...x, muted: muted.value }));
-    },
-    focusMute(id: string) {
-      streams.value = streams.value.map((x) => {
-        return { ...x, muted: x.id !== id };
-      });
-    },
-    vtbs,
-    // setvtbs(names: string[]) {
-    //   names.forEach((name) => {
-    //     if (!vtbs[name]) return;
-    //     vtbs[name].check = false;
-    //   });
-    //   vtbStorage.set(vtbs);
-    // },
-    getCheckedVtbs() {
-      return Object.keys(vtbs).filter((k) => vtbs[k].check);
-    },
-    toggleVtb(name: string) {
-      if (vtbs[name] === undefined) return;
-      vtbs[name].check = !vtbs[name].check;
-      vtbStorage.set(vtbs);
-    },
+    streamRecords,
+    addStream,
+    fetchStreams,
+    fetchTitle,
+    updateStreamTime,
+    removeStream,
+    clearStreams,
+    toggleMuteAll,
+    focusMute,
+    getCheckedVtbs,
+    toggleVtb,
   };
 };
 
