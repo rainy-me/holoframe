@@ -25,8 +25,20 @@ export default {
 
 export const { streams, streamIds } = useState();
 
-export const size = computed(() =>
-  Array(Math.ceil(Math.sqrt(streamIds.value.length)))
+export const c = computed(() => {
+  let cc = Array(Math.ceil(Math.sqrt(streamIds.value.length)))
+    .fill("1fr")
+    .join(" ");
+  console.log({ cc });
+  return cc;
+});
+
+export const r = computed(() =>
+  Array(
+    Math.ceil(
+      streamIds.value.length / Math.ceil(Math.sqrt(streamIds.value.length))
+    )
+  )
     .fill("1fr")
     .join(" ")
 );
@@ -35,11 +47,11 @@ export const openComment = (id: string) =>
   window.open(`https://www.youtube.com/live_chat?v=${id}`);
 </script>
 
-<style scoped vars="{ size }">
+<style scoped vars="{ r, c }">
 .view {
   display: grid;
-  grid-template-rows: var(--size);
-  grid-template-columns: var(--size);
+  grid-template-rows: var(--r);
+  grid-template-columns: var(--c);
   height: 100vh;
 }
 

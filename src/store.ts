@@ -20,7 +20,6 @@ export const createStore = () => {
   };
 
   async function fetchStreams() {
-    console.log("???");
     const vtbs = getCheckedVtbs();
     Object.keys(streamRecords).forEach((k) => {
       if (vtbs.includes(k)) return;
