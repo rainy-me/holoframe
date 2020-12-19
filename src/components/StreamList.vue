@@ -38,7 +38,7 @@
         </div>
         <span class="title">
           <span v-if="stream.title">{{ stream.title }}</span>
-          <span v-else @click.stop="getTitle(stream.id)"> get title </span>
+          <span v-else @click.stop="fetchTitle(stream.id)"> get title </span>
         </span>
         <div class="detail">
           <img class="thumbnail" :src="stream.thumbnail" :alt="stream.title" />
@@ -68,6 +68,7 @@ export const refs = ref<HTMLLIElement[]>([]);
 export const {
   streamRecords,
   addStream,
+  fetchTitle,
   fetchStreams,
   updateStreamTime,
   getCheckedVtbs,
