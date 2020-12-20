@@ -29,18 +29,19 @@ export const c = computed(() => {
   let cc = Array(Math.ceil(Math.sqrt(streamIds.value.length)))
     .fill("1fr")
     .join(" ");
-  console.log({ cc });
   return cc;
 });
 
 export const r = computed(() =>
-  Array(
-    Math.ceil(
-      streamIds.value.length / Math.ceil(Math.sqrt(streamIds.value.length))
-    )
-  )
-    .fill("1fr")
-    .join(" ")
+  streamIds.value.length
+    ? Array(
+        Math.ceil(
+          streamIds.value.length / Math.ceil(Math.sqrt(streamIds.value.length))
+        )
+      )
+        .fill("1fr")
+        .join(" ")
+    : ""
 );
 
 export const openComment = (id: string) =>

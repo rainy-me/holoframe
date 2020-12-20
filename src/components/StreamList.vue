@@ -82,7 +82,7 @@ onMounted(async () => {
 });
 
 watch(
-  () => streamRecords,
+  () => Object.keys(streamRecords).length,
   () => {
     let firstStreamingIndex: null | number = null;
     let i = 0;
