@@ -73,7 +73,7 @@ export const searchColor = computed(() =>
   margin: 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  max-height: 10rem;
+  /* max-height: 10rem; */
   overflow: scroll;
   background-color: rgba(0, 0, 0, 0.6);
 }
