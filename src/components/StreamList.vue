@@ -1,67 +1,89 @@
 <template>
   <div class="list">
     <vtb-list />
-    <ul class="stream-list">
-      <li
-        v-for="(stream, i) in Object.values(streamRecords)"
-        :ref="(el) => (refs[i] = el)"
-        :key="stream.id"
-        :class="['stream', { 'is-streaming': stream.isStreaming }]"
-        :tabindex="i"
-        @click="addStream(stream.id)"
+    <div v-if="fetching" class="fetching">
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <div class="content">
-          <span class="start">
-            {{ formatTime(stream.startTime) }}
-          </span>
-          <span
-            class="member"
-            :style="{
-              '--member--color': stream.members[0].color ?? '#ccc',
-            }"
-          >
-            {{ stream.members[0].name }}
-          </span>
-          <span :class="['producer', producerMap[stream.producer]]">{{
-            stream.producer
-          }}</span>
-          <span class="outlink">
-            <a
-              :href="stream.url"
-              target="_blank"
-              rel="nofollow noopener"
-              @click.stop
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+        ></path>
+      </svg>
+    </div>
+    <div v-else>
+      <ul class="stream-list">
+        <li
+          v-for="(stream, i) in Object.values(streamRecords)"
+          :ref="(el) => (refs[i] = el)"
+          :key="stream.id"
+          :class="['stream', { 'is-streaming': stream.isStreaming }]"
+          :tabindex="i"
+          @click="addStream(stream.id)"
+        >
+          <div class="content">
+            <span class="start">
+              {{ formatTime(stream.startTime) }}
+            </span>
+            <span
+              class="member"
+              :style="{
+                '--member--color': stream.members[0].color ?? '#ccc',
+              }"
             >
-              <svg
-                class="icon"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+              {{ stream.members[0].name }}
+            </span>
+            <span :class="['producer', producerMap[stream.producer]]">{{
+              stream.producer
+            }}</span>
+            <span class="outlink">
+              <a
+                :href="stream.url"
+                target="_blank"
+                rel="nofollow noopener"
+                @click.stop
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                ></path>
-              </svg>
-            </a>
+                <svg
+                  class="icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  ></path>
+                </svg>
+              </a>
+            </span>
+          </div>
+          <span class="title">
+            <span v-if="stream.title">{{ stream.title }}</span>
+            <span v-else @click.stop="fetchTitle(stream.id)"> get title </span>
           </span>
-        </div>
-        <span class="title">
-          <span v-if="stream.title">{{ stream.title }}</span>
-          <span v-else @click.stop="fetchTitle(stream.id)"> get title </span>
-        </span>
-        <div class="detail">
-          <img class="thumbnail" :src="stream.thumbnail" :alt="stream.title" />
-          <span v-if="stream.isStreaming" class="is-streaming-text">
-            LIVE
-            <small class="time-relative"> started {{ stream.length }} </small>
-          </span>
-        </div>
-      </li>
-    </ul>
+          <div class="detail">
+            <img
+              class="thumbnail"
+              :src="stream.thumbnail"
+              :alt="stream.title"
+            />
+            <span v-if="stream.isStreaming" class="is-streaming-text">
+              LIVE
+              <small class="time-relative"> started {{ stream.length }} </small>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -79,6 +101,7 @@ export default {
 
 export const refs = ref<HTMLLIElement[]>([]);
 export const {
+  fetching,
   streamRecords,
   addStream,
   fetchTitle,
@@ -258,5 +281,26 @@ export const producerMap: Record<Stream["producer"], string> = {
 .nijisanji {
   background: rgb(50, 76, 111);
   color: #fff;
+}
+
+.fetching {
+  height: 2rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+@keyframes r {
+  from {
+    transform: rotate(1turn);
+  }
+  to {
+    transform: rotate(0);
+  }
+}
+
+.fetching svg {
+  color: #ccc;
+  height: 100%;
+  animation: r 1s linear infinite;
 }
 </style>

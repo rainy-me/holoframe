@@ -68,8 +68,13 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
 }
 .control input {
   width: 15rem;
+  padding-left: 10px;
   color: #ccc;
-  background-color: #333;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-left: 3px solid aquamarine;
+  caret-color: aquamarine;
 }
 
 .control button {
@@ -84,17 +89,18 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
   position: sticky;
   top: 0;
   z-index: 500;
-  background-color: #333;
+  background-color: rgba(0, 0, 0, 0.5);
   display: grid;
   grid-template-columns: auto auto auto auto auto;
+  margin-left: 1rem;
 }
 
 .add {
-  background-color: #333;
+  background-color: rgba(0, 0, 0, 0.5);
   color: #ccc;
 }
 .clear {
-  background-color: #333;
+  background-color: rgba(0, 0, 0, 0.5);
   color: palevioletred;
 }
 .hide {

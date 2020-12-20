@@ -9,6 +9,7 @@ export const createStore = () => {
   const streamIds = computed(() => streams.value.map((s) => s.id));
 
   const muted = ref(false);
+  const fetching = ref(true);
   const vtbs = reactive<Record<string, VTB>>(vtbStorage.get());
 
   watchEffect(() => {
@@ -20,30 +21,36 @@ export const createStore = () => {
   };
 
   async function fetchStreams() {
-    const vtbs = getCheckedVtbs();
-    Object.keys(streamRecords).forEach((k) => {
-      if (vtbs.includes(k)) return;
-      delete streamRecords[k];
-    });
+    fetching.value = true;
+    await doFetch();
+    fetching.value = false;
 
-    if (!vtbs.length) {
-      // streamRecords = {}
-      return;
+    async function doFetch() {
+      const vtbs = getCheckedVtbs();
+      Object.keys(streamRecords).forEach((k) => {
+        if (vtbs.includes(k)) return;
+        delete streamRecords[k];
+      });
+
+      if (!vtbs.length) {
+        // streamRecords = {}
+        return;
+      }
+      const res = await fetch("https://api.yue.coffee/api/tv/v1.1", {
+        method: "post",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(vtbs),
+      });
+      const { data, error }: { data: Stream[]; error: any } = await res.json();
+      if (error) return;
+      data.forEach((stream) => {
+        stream.length = getRelativeTime(stream.startTime);
+        streamRecords[stream.id] = stream;
+      });
     }
-    const res = await fetch("https://api.yue.coffee/api/tv/v1.1", {
-      method: "post",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(vtbs),
-    });
-    const { data, error }: { data: Stream[]; error: any } = await res.json();
-    if (error) return;
-    data.forEach((stream) => {
-      stream.length = getRelativeTime(stream.startTime);
-      streamRecords[stream.id] = stream;
-    });
   }
   async function fetchTitle(id: string) {
     streamRecords[id].title = "⟳";
@@ -123,6 +130,7 @@ export const createStore = () => {
   }
 
   return {
+    fetching,
     muted,
     vtbs,
     streams,
