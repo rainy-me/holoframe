@@ -70,7 +70,7 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
   width: 15rem;
   padding-left: 10px;
   color: #ccc;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: transparent;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   border-left: 3px solid aquamarine;
@@ -82,25 +82,25 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
 }
 
 .control button:hover {
-  background-color: #222;
+  background-color: #333;
 }
 
 .panel {
   position: sticky;
   top: 0;
   z-index: 500;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
   display: grid;
   grid-template-columns: auto auto auto auto auto;
-  margin-left: 1rem;
+  padding-left: 1rem;
 }
 
 .add {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: transparent;
   color: #ccc;
 }
 .clear {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: transparent;
   color: palevioletred;
 }
 .hide {
