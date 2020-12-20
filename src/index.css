@@ -15,7 +15,7 @@ iframe {
 * {
   box-sizing: border-box;
   transition: 0.3s all ease-in-out;
-  -ms-overflow-style: none; 
+  -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
@@ -29,7 +29,12 @@ a {
   text-decoration: none;
 }
 
-li{
+li {
   list-style: none;
   display: grid;
+}
+
+.icon {
+  height: 1.4rem;
+  width: 1.4rem;
 }
