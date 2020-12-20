@@ -53,7 +53,7 @@ export const createStore = () => {
     }
   }
   async function fetchTitle(id: string) {
-    streamRecords[id].title = "⟳";
+    streamRecords[id].title = "fetching...";
     const res = await fetch("https://api.yue.coffee/api/v1/page-title", {
       method: "post",
       mode: "cors",

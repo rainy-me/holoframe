@@ -5,20 +5,23 @@
     @mouseleave="hideControls"
   >
     <div class="panel">
-      <input
-        v-model="idInput"
-        class="base"
-        type="text"
-        @keydown.enter="addStream(idInput)"
-      />
-      <button class="base add" @click="addStream(idInput)">add</button>
-      <button class="base clear" @click="clearStreams()">clear</button>
-      <button class="base add" @click="toggleOpen">
-        {{ open ? "▲" : "▼" }}
-      </button>
-      <button class="base add" @click="toggleMuteAll()">
-        {{ muted ? "🔉" : "🔇" }}
-      </button>
+      <div class="shortcut">
+        <input
+          v-model="idInput"
+          class="base"
+          type="text"
+          @keydown.enter="addStream(idInput)"
+        />
+        <button class="base add" @click="addStream(idInput)">add</button>
+        <button class="base clear" @click="clearStreams()">clear</button>
+        <button class="base add" @click="toggleOpen">
+          {{ open ? "▲" : "▼" }}
+        </button>
+        <button class="base add" @click="toggleMuteAll()">
+          {{ muted ? "🔉" : "🔇" }}
+        </button>
+      </div>
+      <vtb-list />
     </div>
     <h-stream-list v-show="open" />
   </div>
@@ -28,9 +31,11 @@
 import { ref } from "vue";
 import { useState } from "../store";
 import hStreamList from "./StreamList.vue";
+import vtbList from "./VtbList.vue";
 
 export default {
   components: {
+    vtbList,
     hStreamList,
   },
 };
@@ -90,9 +95,15 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
   top: 0;
   z-index: 500;
   background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 5px #000;
+  border-bottom: 10px solid #333;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.shortcut {
   display: grid;
   grid-template-columns: auto auto auto auto auto;
-  padding-left: 1rem;
 }
 
 .add {

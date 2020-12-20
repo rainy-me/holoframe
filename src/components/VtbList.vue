@@ -10,10 +10,43 @@
     </li>
     <li>
       <button class="btn" @click.stop="toggleSearch">
-        {{ showSearch ? "hideSearch" : "showSearch" }}
+        <svg
+          v-if="showSearch"
+          class="icon"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+        <svg
+          v-else
+          class="icon"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
       </button>
     </li>
-    <li><button class="refetch" @click.stop="fetchStreams">refetch</button></li>
+    <li class="vtb">
+      <button class="refetch" @click.stop="fetchStreams">
+        <sync-icon />
+      </button>
+    </li>
   </ul>
   <div v-show="showSearch">
     <input
@@ -39,8 +72,13 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useState } from "../store";
+import SyncIcon from "./SyncIcon.vue";
 
-export default {};
+export default {
+  components: {
+    SyncIcon,
+  },
+};
 
 export const { vtbs, toggleVtb, fetchStreams } = useState();
 export const searchString = ref("");
@@ -62,12 +100,12 @@ export const checkedVtbs = computed(() =>
 
 export const showSearch = ref(false);
 export const toggleSearch = () => (showSearch.value = !showSearch.value);
-export const searchColor = computed(() =>
-  showSearch.value ? "pink" : "yellowgreen"
-);
+// export const searchColor = computed(() =>
+//   showSearch.value ? "pink" : "yellowgreen"
+// );
 </script>
 
-<style scoped vars="{ searchColor }">
+<style scoped>
 .vtb-list {
   padding: 0;
   margin: 0;
@@ -76,6 +114,7 @@ export const searchColor = computed(() =>
   /* max-height: 10rem; */
   overflow: scroll;
   background-color: rgba(0, 0, 0, 0.6);
+  padding: 1rem 0 0;
 }
 
 .vtb {
@@ -117,16 +156,16 @@ export const searchColor = computed(() =>
   font-size: 1.2rem;
   cursor: pointer;
   display: block;
-  color: var(--searchColor);
+  color: aquamarine;
 }
 .refetch {
   width: 100%;
+  height: 100%;
   appearance: none;
   border: 0;
   background-color: rgba(0, 0, 0, 0.6);
   color: aquamarine;
-  font-size: 1.2rem;
+  height: 1.4rem;
   cursor: pointer;
-  display: block;
 }
 </style>
