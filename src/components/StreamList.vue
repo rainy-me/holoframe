@@ -1,5 +1,6 @@
 <template>
   <div class="list">
+    <vtb-list />
     <div v-if="fetching" class="fetching">
       <sync-icon animate />
     </div>
@@ -78,9 +79,11 @@ import { ref, onMounted, watch, nextTick } from "vue";
 import type { Stream } from "@/utils";
 import { useState } from "../store";
 import SyncIcon from "./SyncIcon.vue";
+import vtbList from "./VtbList.vue";
 
 export default {
   components: {
+    vtbList,
     SyncIcon,
   },
 };
