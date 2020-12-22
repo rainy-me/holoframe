@@ -29,7 +29,6 @@ const createStorage = <T>(options: { key: string; init: T }) => {
       }
     },
     set(value: T) {
-      console.log(`set ${key} ${value}`);
       localStorage.setItem(key, JSON.stringify(value));
     },
   };

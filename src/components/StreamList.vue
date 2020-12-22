@@ -8,7 +8,7 @@
       <ul class="stream-list">
         <li
           v-for="(stream, i) in Object.values(streamRecords)"
-          :ref="(el) => (refs[i] = el)"
+          :id="`stream-${stream.id}`"
           :key="stream.id"
           :class="['stream', { 'is-streaming': stream.isStreaming }]"
           :tabindex="i"
@@ -107,20 +107,17 @@ onMounted(async () => {
 });
 
 watch(
-  () => Object.keys(streamRecords).length,
+  () => [Object.keys(streamRecords).length, refs.value.length],
   () => {
-    let firstStreamingIndex: null | number = null;
-    let i = 0;
+    let firstStreamingId: null | string = null;
     for (const data of Object.values(streamRecords)) {
       if (data.isStreaming) {
-        firstStreamingIndex = i;
+        firstStreamingId = data.id;
         break;
       }
-      i++;
     }
-    if (!firstStreamingIndex) return;
-    nextTick(() => {
-      refs.value[firstStreamingIndex as number].scrollIntoView({
+    setTimeout(() => {
+      document.querySelector(`#stream-${firstStreamingId}`)?.scrollIntoView({
         behavior: "smooth",
       });
     });

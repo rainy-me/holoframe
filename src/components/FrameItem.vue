@@ -36,7 +36,6 @@ let player = null as null | YT.Player;
 onMounted(() => {
   let interval = window.setInterval(() => {
     if (!window.YT) return;
-    console.log(props.id);
     window.clearInterval(interval);
     player = createIframe(props.id);
   }, 200);
