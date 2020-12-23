@@ -69,8 +69,8 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
   appearance: none;
 }
 .control input {
-  width: 15rem;
-  padding-left: 10px;
+  /* width: 15rem; */
+  /* padding-left: 10px; */
   color: #ccc;
   background-color: transparent;
   border-top-left-radius: 5px;
@@ -101,7 +101,7 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
   background-color: rgba(0, 0, 0, 0.8);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  padding: 5px;
+  /* padding: 5px; */
   margin-bottom: 7px;
 }
 .panel:after {

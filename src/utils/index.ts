@@ -3,15 +3,18 @@ import vtbs from "../assets/vtbs.json";
 
 export * from "./types";
 
-export function createIframe(videoId: string) {
+export function createIframe(
+  videoId: string,
+  options?: ConstructorParameters<typeof window.YT.Player>[1]
+) {
   return new window.YT.Player(videoId, {
     videoId,
     events: {
       onReady(event) {
         event.target.playVideo();
       },
-      onStateChange() {},
     },
+    ...options,
   });
 }
 

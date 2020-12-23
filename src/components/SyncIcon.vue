@@ -1,6 +1,6 @@
 <template>
   <svg
-    :class="['icon-sync', animate && 'animate']"
+    :class="['icon-sync', { animate }]"
     fill="none"
     stroke="currentColor"
     viewBox="0 0 24 24"

@@ -2,8 +2,11 @@
   <div class="frame">
     <div class="control">
       <div class="close" @click="removeStream(id)">X</div>
-      <div class="comment" @click="openComment(id)">comment</div>
-      <div class="mute" @click="focusMute(id)">🎧</div>
+      <div class="comment hover" @click="openComment(id)">comment</div>
+      <div class="reload hover" @click="reload()">
+        <sync-icon :animate="loading" />
+      </div>
+      <div class="mute hover" @click="focusMute(id)">🎧</div>
       <a
         class="link"
         :href="`https://www.youtube.com/watch?v=${id}`"
@@ -17,11 +20,15 @@
 </template>
 
 <script lang="ts" setup="props">
-import { onMounted, watch } from "vue";
+import { onMounted, watch, ref } from "vue";
 import { useState } from "../store";
 import { createIframe } from "../utils";
+import SyncIcon from "./SyncIcon.vue";
 
 export default {
+  components: {
+    SyncIcon,
+  },
   props: ["id", "muted"],
 };
 
@@ -32,14 +39,45 @@ declare const props: {
 
 // eslint-disable-next-line no-undef
 let player = null as null | YT.Player;
+export const loading = ref(true);
 
-onMounted(() => {
+watch(
+  () => loading.value,
+  () => {
+    console.log(loading.value);
+  }
+);
+
+const load = () => {
   let interval = window.setInterval(() => {
     if (!window.YT) return;
     window.clearInterval(interval);
-    player = createIframe(props.id);
+    player = createIframe(props.id, {
+      events: {
+        onReady() {
+          loading.value = false;
+        },
+        onStateChange(event) {
+          switch (event.data) {
+            case window.YT.PlayerState.PLAYING: {
+              loading.value = false;
+              break;
+            }
+          }
+        },
+      },
+    });
   }, 200);
+};
+
+onMounted(() => {
+  load();
 });
+
+export const reload = () => {
+  loading.value = true;
+  player?.loadVideoById(props.id);
+};
 
 watch(
   () => props.muted,
@@ -129,9 +167,6 @@ export const openComment = (id: string) =>
   cursor: pointer;
   border-radius: 10px;
 }
-.comment:hover {
-  background-color: #333;
-}
 
 .mute {
   display: grid;
@@ -140,7 +175,21 @@ export const openComment = (id: string) =>
   padding: 0 5px;
   border-radius: 10px;
 }
-.mute:hover {
+
+.reload {
+  display: grid;
+  place-items: center;
+  margin: 0 5px;
+  padding: 0 5px;
+  border-radius: 10px;
+  color: #ccc;
+}
+.reload svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.hover:hover {
   background-color: #333;
 }
 
