@@ -40,7 +40,7 @@ export const idInput = ref("");
 
 export const controls = ref(1);
 export const showControls = () => (controls.value = 1);
-// export const hideControls = () => (controls.value = 0);
+export const hideControls = () => (controls.value = 0);
 
 export const open = ref(true);
 export const toggleOpen = () => (open.value = !open.value);
