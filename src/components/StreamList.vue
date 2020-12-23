@@ -143,7 +143,7 @@ export const producerMap: Record<Stream["producer"], string> = {
 
 <style scoped>
 .list {
-  margin: 0 1rem;
+  margin: 0 10px;
 }
 .stream-list {
   overflow: scroll;
@@ -273,14 +273,5 @@ export const producerMap: Record<Stream["producer"], string> = {
   height: 2rem;
   margin: 2rem 0;
   text-align: center;
-}
-
-@keyframes r {
-  from {
-    transform: rotate(1turn);
-  }
-  to {
-    transform: rotate(0);
-  }
 }
 </style>

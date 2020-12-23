@@ -133,6 +133,7 @@ export const openComment = (id: string) =>
   border-bottom-left-radius: 25px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+  user-select: none;
 }
 
 .control:hover {

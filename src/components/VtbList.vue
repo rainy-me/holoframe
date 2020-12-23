@@ -42,8 +42,8 @@
         </svg>
       </button>
     </li>
-    <li class="vtb">
-      <button class="refetch" @click.stop="fetchStreams">
+    <li>
+      <button class="btn refetch" @click.stop="fetchStreams">
         <sync-icon />
       </button>
     </li>
@@ -150,6 +150,7 @@ export const toggleSearch = () => (showSearch.value = !showSearch.value);
 }
 .btn {
   width: 100%;
+  height: 100%;
   appearance: none;
   border: 0;
   background-color: rgba(0, 0, 0, 0.6);
@@ -159,13 +160,6 @@ export const toggleSearch = () => (showSearch.value = !showSearch.value);
   color: aquamarine;
 }
 .refetch {
-  width: 100%;
-  height: 100%;
-  appearance: none;
-  border: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: aquamarine;
   height: 1.4rem;
-  cursor: pointer;
 }
 </style>

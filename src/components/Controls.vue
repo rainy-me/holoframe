@@ -40,7 +40,7 @@ export const idInput = ref("");
 
 export const controls = ref(1);
 export const showControls = () => (controls.value = 1);
-export const hideControls = () => (controls.value = 0);
+// export const hideControls = () => (controls.value = 0);
 
 export const open = ref(true);
 export const toggleOpen = () => (open.value = !open.value);
@@ -69,8 +69,8 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
   appearance: none;
 }
 .control input {
-  /* width: 15rem; */
-  /* padding-left: 10px; */
+  width: 14rem;
+  padding-left: 10px;
   color: #ccc;
   background-color: transparent;
   border-top-left-radius: 5px;
