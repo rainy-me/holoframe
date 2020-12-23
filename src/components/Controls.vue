@@ -102,6 +102,7 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   padding: 5px;
+  margin-bottom: 7px;
 }
 .panel:after {
   width: calc(100% - 5px);
@@ -130,6 +131,6 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
   color: palevioletred;
 }
 .hide {
-  /* height: max-content; */
+  height: max-content;
 }
 </style>

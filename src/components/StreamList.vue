@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts" setup="{ root }">
-import { ref, onMounted, watch, nextTick } from "vue";
+import { ref, onMounted, watch } from "vue";
 import type { Stream } from "@/utils";
 import { useState } from "../store";
 import SyncIcon from "./SyncIcon.vue";
