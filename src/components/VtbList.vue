@@ -1,13 +1,13 @@
 <template>
   <ul class="vtb-list">
-    <li
+    <!-- <li
       v-for="vtb in checkedVtbs"
       :key="vtb.name"
       :class="['vtb', { checked: vtb.check }]"
       @click.stop="toggleVtb(vtb.nameJP)"
     >
       {{ vtb.nameJP }}
-    </li>
+    </li> -->
     <li>
       <button class="btn" @click.stop="toggleSearch">
         <svg
