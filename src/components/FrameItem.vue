@@ -53,10 +53,11 @@ const load = () => {
     if (!window.YT) return;
     window.clearInterval(interval);
     player = new window.YT.Player(props.id, {
+      videoId: props.id,
       events: {
-        onReady(event) {
+        onReady() {
           loading.value = false;
-          event.target.playVideo();
+          player?.playVideo();
         },
         onStateChange(event) {
           switch (event.data) {
