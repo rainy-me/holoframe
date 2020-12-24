@@ -52,10 +52,11 @@ const load = () => {
   let interval = window.setInterval(() => {
     if (!window.YT) return;
     window.clearInterval(interval);
-    player = createIframe(props.id, {
+    player = new window.YT.Player(props.id, {
       events: {
-        onReady() {
+        onReady(event) {
           loading.value = false;
+          event.target.playVideo();
         },
         onStateChange(event) {
           switch (event.data) {
