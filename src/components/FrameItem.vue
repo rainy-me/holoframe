@@ -22,13 +22,8 @@
 <script lang="ts" setup="props">
 import { onMounted, watch, ref } from "vue";
 import { useState } from "../store";
-import { createIframe } from "../utils";
-import SyncIcon from "./SyncIcon.vue";
 
 export default {
-  components: {
-    SyncIcon,
-  },
   props: ["id", "muted"],
 };
 

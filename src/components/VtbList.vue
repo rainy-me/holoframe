@@ -42,11 +42,6 @@
         </svg>
       </button>
     </li>
-    <li>
-      <button class="btn refetch" @click.stop="fetchStreams">
-        <sync-icon />
-      </button>
-    </li>
   </ul>
   <div v-show="showSearch">
     <input
@@ -72,13 +67,6 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useState } from "../store";
-import SyncIcon from "./SyncIcon.vue";
-
-export default {
-  components: {
-    SyncIcon,
-  },
-};
 
 export const { vtbs, toggleVtb, fetchStreams } = useState();
 export const searchString = ref("");
@@ -158,8 +146,5 @@ export const toggleSearch = () => (showSearch.value = !showSearch.value);
   cursor: pointer;
   display: block;
   color: aquamarine;
-}
-.refetch {
-  height: 1.4rem;
 }
 </style>

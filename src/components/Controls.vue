@@ -13,12 +13,80 @@
           @keydown.enter="addStream(idInput)"
         />
         <button class="base add" @click="addStream(idInput)">add</button>
-        <button class="base clear" @click="clearStreams()">clear</button>
-        <button class="base add" @click="toggleOpen">
-          {{ open ? "▲" : "▼" }}
+        <!-- <button class="base clear" @click="clearStreams()">clear</button> -->
+        <button class="base refetch" @click.stop="openThenFetch">
+          <sync-icon :animate="fetching" />
         </button>
-        <button class="base add" @click="toggleMuteAll()">
-          {{ muted ? "🔉" : "🔇" }}
+        <button class="base add" @click="toggleOpen">
+          <svg
+            v-if="open"
+            class="icon"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 15l7-7 7 7"
+            />
+          </svg>
+          <svg
+            v-else
+            class="icon"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            />
+          </svg>
+        </button>
+        <button class="base add" @click="toggleMuteAll">
+          <svg
+            v-if="muted"
+            class="icon"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+              clip-rule="evenodd"
+            ></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
+            />
+          </svg>
+          <svg
+            v-else
+            class="icon"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+            />
+          </svg>
         </button>
       </div>
     </div>
@@ -30,21 +98,36 @@
 import { ref } from "vue";
 import { useState } from "../store";
 import hStreamList from "./StreamList.vue";
+import SyncIcon from "./SyncIcon.vue";
 
 export default {
   components: {
     hStreamList,
+    SyncIcon,
   },
 };
+
+export const {
+  fetching,
+  addStream,
+  fetchStreams,
+  clearStreams,
+  muted,
+  toggleMuteAll,
+} = useState();
+
 export const idInput = ref("");
 
 export const controls = ref(1);
 export const showControls = () => (controls.value = 1);
 export const hideControls = () => (controls.value = 0);
+export const openThenFetch = () => {
+  open.value = true;
+  fetchStreams();
+};
 
 export const open = ref(true);
 export const toggleOpen = () => (open.value = !open.value);
-export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
 </script>
 
 <style scoped vars="{ controls }">
@@ -101,7 +184,6 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
   background-color: rgba(0, 0, 0, 0.8);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  /* padding: 5px; */
   margin-bottom: 7px;
 }
 .panel:after {
@@ -118,8 +200,8 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
 }
 
 .shortcut {
-  display: grid;
-  grid-template-columns: auto auto auto auto auto;
+  display: flex;
+  justify-content: space-between;
 }
 
 .add {
@@ -132,5 +214,16 @@ export const { addStream, clearStreams, muted, toggleMuteAll } = useState();
 }
 .hide {
   height: max-content;
+}
+.refetch {
+  display: grid;
+  place-content: center;
+  appearance: none;
+  border: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  padding: 10px;
+  width: 40px;
+  color: aquamarine;
 }
 </style>
