@@ -129,6 +129,21 @@ export const createStore = () => {
     fetchStreams();
   }
 
+  function scrollToLiveStream() {
+    let firstStreamingId: null | string = null;
+    for (const data of Object.values(streamRecords)) {
+      if (data.isStreaming) {
+        firstStreamingId = data.id;
+        break;
+      }
+    }
+    setTimeout(() => {
+      document.querySelector(`#stream-${firstStreamingId}`)?.scrollIntoView({
+        behavior: "smooth",
+      });
+    });
+  }
+
   return {
     fetching,
     muted,
@@ -145,6 +160,7 @@ export const createStore = () => {
     toggleMuteAll,
     focusMute,
     getCheckedVtbs,
+    scrollToLiveStream,
     toggleVtb,
   };
 };

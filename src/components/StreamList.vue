@@ -97,6 +97,7 @@ export const {
   fetchStreams,
   updateStreamTime,
   getCheckedVtbs,
+  scrollToLiveStream,
 } = useState();
 
 onMounted(async () => {
@@ -104,25 +105,8 @@ onMounted(async () => {
   setInterval(() => {
     updateStreamTime();
   }, 1000);
+  scrollToLiveStream();
 });
-
-watch(
-  () => [Object.keys(streamRecords).length, refs.value.length],
-  () => {
-    let firstStreamingId: null | string = null;
-    for (const data of Object.values(streamRecords)) {
-      if (data.isStreaming) {
-        firstStreamingId = data.id;
-        break;
-      }
-    }
-    setTimeout(() => {
-      document.querySelector(`#stream-${firstStreamingId}`)?.scrollIntoView({
-        behavior: "smooth",
-      });
-    });
-  }
-);
 
 const intl = new Intl.DateTimeFormat("default", {
   month: "numeric",
