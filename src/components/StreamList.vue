@@ -1,5 +1,6 @@
 <template>
   <div class="list">
+    <div ref="list" />
     <vtb-list />
     <div v-if="fetching" class="fetching">
       <sync-icon animate />
@@ -71,6 +72,22 @@
         </li>
       </ul>
     </div>
+    <svg
+      class="up"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      @click="scrollToTop"
+    >
+      <path
+        class="path"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M5 11l7-7 7 7M5 19l7-7 7 7"
+      />
+    </svg>
   </div>
 </template>
 
@@ -122,6 +139,13 @@ export const formatTime = (date: Date) => {
 export const producerMap: Record<Stream["producer"], string> = {
   Hololive: "hololive",
   にじさんじ: "nijisanji",
+};
+
+export const list = ref<HTMLDivElement | null>(null);
+
+export const scrollToTop = () => {
+  console.log(list.value);
+  list.value?.scrollIntoView({ block: "end", behavior: "smooth" });
 };
 </script>
 
@@ -257,5 +281,41 @@ export const producerMap: Record<Stream["producer"], string> = {
   height: 2rem;
   margin: 2rem 0;
   text-align: center;
+}
+.up {
+  transition: 0.3s all ease-in-out;
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 1rem;
+  padding: 5px;
+  background: linear-gradient(30deg, gold, hotpink, aqua);
+  box-shadow: 0 0 4px #ccc;
+  background-clip: content-box;
+  opacity: 0.5;
+  cursor: pointer;
+}
+.up:hover {
+  opacity: 1;
+  box-shadow: 0 0 2px #000 inset, 0 0 4px #ccc;
+}
+.up:hover .path {
+  animation: move 1s infinite forwards;
+}
+
+@keyframes move {
+  0% {
+    opacity: 0;
+    transform: translateY(45%);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-45%);
+  }
 }
 </style>
