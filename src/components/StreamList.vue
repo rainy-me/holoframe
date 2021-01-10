@@ -291,7 +291,7 @@ export const scrollToTop = () => {
   height: 2.5rem;
   border-radius: 1rem;
   padding: 5px;
-  background: linear-gradient(30deg, gold, hotpink, aqua);
+  background: linear-gradient(30deg, gold, aqua);
   box-shadow: 0 0 4px #ccc;
   background-clip: content-box;
   opacity: 0.5;

@@ -185,6 +185,7 @@ export const toggleOpen = () => (open.value = !open.value);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   margin-bottom: 7px;
+  box-shadow: 0 0 3px #ccc, 0 0 0.5rem #000, 0 0 1rem #000;
 }
 .panel:after {
   width: calc(100% - 5px);
@@ -193,10 +194,11 @@ export const toggleOpen = () => (open.value = !open.value);
   position: absolute;
   top: 100%;
   content: "";
-  background: linear-gradient(to right, aquamarine, hotpink);
+  /* background: #777; */
+  /* box-shadow: 0 0 2px #000 inset; */
+  /* linear-gradient(to right, aquamarine, hotpink); */
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  box-shadow: 0 0 5px #000;
 }
 
 .shortcut {
