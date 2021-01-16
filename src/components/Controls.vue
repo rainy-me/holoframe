@@ -114,6 +114,7 @@ export const {
   clearStreams,
   muted,
   toggleMuteAll,
+  scrollToLiveStream,
 } = useState();
 
 export const idInput = ref("");
@@ -127,7 +128,11 @@ export const openThenFetch = () => {
 };
 
 export const open = ref(true);
-export const toggleOpen = () => (open.value = !open.value);
+export const toggleOpen = () => {
+  if ((open.value = !open.value)) {
+    scrollToLiveStream();
+  }
+};
 </script>
 
 <style scoped vars="{ controls }">
@@ -145,6 +150,7 @@ export const toggleOpen = () => (open.value = !open.value);
 }
 .base {
   height: 40px;
+  min-width: 40px;
   border: 0;
   outline: 0;
   font-size: 24px;

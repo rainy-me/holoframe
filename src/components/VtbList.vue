@@ -68,6 +68,8 @@
 import { ref, computed } from "vue";
 import { useState } from "../store";
 
+export default {};
+
 export const { vtbs, toggleVtb, fetchStreams, scrollToLiveStream } = useState();
 export const searchString = ref("");
 export const allVtbs = computed(() => Object.entries(vtbs).map(([, v]) => v));

@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts" setup="{ root }">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import type { Stream } from "@/utils";
 import { useState } from "../store";
 import SyncIcon from "./SyncIcon.vue";
@@ -144,7 +144,6 @@ export const producerMap: Record<Stream["producer"], string> = {
 export const list = ref<HTMLDivElement | null>(null);
 
 export const scrollToTop = () => {
-  console.log(list.value);
   list.value?.scrollIntoView({ block: "end", behavior: "smooth" });
 };
 </script>
