@@ -98,15 +98,8 @@ import { useState } from "../store";
 import SyncIcon from "./SyncIcon.vue";
 import vtbList from "./VtbList.vue";
 
-export default {
-  components: {
-    vtbList,
-    SyncIcon,
-  },
-};
-
-export const refs = ref<HTMLLIElement[]>([]);
-export const {
+const refs = ref<HTMLLIElement[]>([]);
+const {
   fetching,
   streamRecords,
   addStream,
@@ -132,18 +125,18 @@ const intl = new Intl.DateTimeFormat("default", {
   minute: "numeric",
 });
 
-export const formatTime = (date: Date) => {
+const formatTime = (date: Date) => {
   return intl.format(date);
 };
 
-export const producerMap: Record<Stream["producer"], string> = {
+const producerMap: Record<Stream["producer"], string> = {
   Hololive: "hololive",
   にじさんじ: "nijisanji",
 };
 
-export const list = ref<HTMLDivElement | null>(null);
+const list = ref<HTMLDivElement | null>(null);
 
-export const scrollToTop = () => {
+const scrollToTop = () => {
   list.value?.scrollIntoView({ block: "end", behavior: "smooth" });
 };
 </script>

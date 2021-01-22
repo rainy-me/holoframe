@@ -12,27 +12,22 @@
 </template>
 
 <script lang="ts" setup="props">
-import { computed } from "vue";
+import { computed, defineEmit } from "vue";
 import { useState } from "../store";
 import hFrameItem from "./FrameItem.vue";
 
-export default {
-  components: {
-    hFrameItem,
-  },
-  emits: ["remove"],
-};
+const emits = defineEmit(["remove"]);
 
-export const { streams, streamIds } = useState();
+const { streams, streamIds } = useState();
 
-export const c = computed(() => {
+const c = computed(() => {
   let cc = Array(Math.ceil(Math.sqrt(streamIds.value.length)))
     .fill("1fr")
     .join(" ");
   return cc;
 });
 
-export const r = computed(() =>
+const r = computed(() =>
   streamIds.value.length
     ? Array(
         Math.ceil(
@@ -44,15 +39,15 @@ export const r = computed(() =>
     : ""
 );
 
-export const openComment = (id: string) =>
+const openComment = (id: string) =>
   window.open(`https://www.youtube.com/live_chat?v=${id}`);
 </script>
 
-<style scoped vars="{ r, c }">
+<style scoped>
 .view {
   display: grid;
-  grid-template-rows: var(--r);
-  grid-template-columns: var(--c);
+  grid-template-rows: v-bind(r);
+  grid-template-columns: v-bind(c);
   height: 100vh;
 }
 

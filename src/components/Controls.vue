@@ -100,14 +100,7 @@ import { useState } from "../store";
 import hStreamList from "./StreamList.vue";
 import SyncIcon from "./SyncIcon.vue";
 
-export default {
-  components: {
-    hStreamList,
-    SyncIcon,
-  },
-};
-
-export const {
+const {
   fetching,
   addStream,
   fetchStreams,
@@ -117,27 +110,27 @@ export const {
   scrollToLiveStream,
 } = useState();
 
-export const idInput = ref("");
+const idInput = ref("");
 
-export const controls = ref(1);
-export const showControls = () => (controls.value = 1);
-export const hideControls = () => (controls.value = 0);
-export const openThenFetch = () => {
+const controls = ref(1);
+const showControls = () => (controls.value = 1);
+const hideControls = () => (controls.value = 0);
+const openThenFetch = () => {
   open.value = true;
   fetchStreams();
 };
 
-export const open = ref(true);
-export const toggleOpen = () => {
+const open = ref(true);
+const toggleOpen = () => {
   if ((open.value = !open.value)) {
     scrollToLiveStream();
   }
 };
 </script>
 
-<style scoped vars="{ controls }">
+<style scoped>
 .control {
-  opacity: var(--controls);
+  opacity: v-bind(controls);
   position: fixed;
   top: 0;
   right: 0;

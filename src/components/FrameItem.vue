@@ -35,25 +35,18 @@
 </template>
 
 <script lang="ts" setup="props">
-import { onMounted, watch, ref } from "vue";
+import { onMounted, watch, ref, defineProps } from "vue";
 import { useState } from "../store";
 import SyncIcon from "./SyncIcon.vue";
 
-export default {
-  components: {
-    SyncIcon,
-  },
-  props: ["id", "muted"],
-};
-
-declare const props: {
-  id: string;
-  muted: boolean;
-};
+const props = defineProps({
+  id: String,
+  muted: Boolean,
+});
 
 // eslint-disable-next-line no-undef
 let player = null as null | YT.Player;
-export const loading = ref(true);
+const loading = ref(true);
 
 watch(
   () => loading.value,
@@ -90,7 +83,7 @@ onMounted(() => {
   load();
 });
 
-export const reload = () => {
+const reload = () => {
   loading.value = true;
   player?.loadVideoById(props.id);
 };
@@ -107,17 +100,17 @@ watch(
   }
 );
 
-export const { removeStream, focusMute } = useState();
+const { removeStream, focusMute } = useState();
 
-export const openComment = (id: string) =>
+const openComment = (id: string) =>
   window.open(`https://www.youtube.com/live_chat?v=${id}`);
 </script>
 
-<style scoped vars="{ size }">
+<style scoped>
 .view {
   display: grid;
-  grid-template-rows: var(--size);
-  grid-template-columns: var(--size);
+  grid-template-rows: v-bind(size);
+  grid-template-columns: v-bind(size);
   height: 100vh;
 }
 

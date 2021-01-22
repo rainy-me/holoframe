@@ -16,11 +16,10 @@
 </template>
 
 <script lang="ts" setup>
-export default {
-  props: {
-    animate: Boolean,
-  },
-};
+import { defineProps } from "vue";
+const props = defineProps({
+  animate: Boolean,
+});
 </script>
 
 <style scoped>

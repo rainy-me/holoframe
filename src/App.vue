@@ -6,13 +6,6 @@
 <script lang="ts" setup>
 import hFrameGrid from "./components/FrameGrid.vue";
 import hControls from "./components/Controls.vue";
-
-export default {
-  components: {
-    hFrameGrid,
-    hControls,
-  },
-};
 </script>
 
 <style scoped>

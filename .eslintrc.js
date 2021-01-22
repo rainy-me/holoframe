@@ -13,5 +13,6 @@ module.exports = {
   ],
   rules: {
     "vue/require-prop-types": "off",
+    "eslint-disable no-unused-vars": "off",
   },
 };

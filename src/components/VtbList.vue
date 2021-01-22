@@ -68,13 +68,11 @@
 import { ref, computed } from "vue";
 import { useState } from "../store";
 
-export default {};
+const { vtbs, toggleVtb, fetchStreams, scrollToLiveStream } = useState();
+const searchString = ref("");
+const allVtbs = computed(() => Object.entries(vtbs).map(([, v]) => v));
 
-export const { vtbs, toggleVtb, fetchStreams, scrollToLiveStream } = useState();
-export const searchString = ref("");
-export const allVtbs = computed(() => Object.entries(vtbs).map(([, v]) => v));
-
-export const searchedVtbs = computed(() => {
+const searchedVtbs = computed(() => {
   if (!searchString.value) {
     return allVtbs.value;
   }
@@ -84,18 +82,16 @@ export const searchedVtbs = computed(() => {
   );
 });
 
-export const checkedVtbs = computed(() =>
-  allVtbs.value.filter((vtb) => vtb.check)
-);
+const checkedVtbs = computed(() => allVtbs.value.filter((vtb) => vtb.check));
 
-export const showSearch = ref(false);
-export const toggleSearch = () => {
+const showSearch = ref(false);
+const toggleSearch = () => {
   if (showSearch.value) {
     scrollToLiveStream();
   }
   showSearch.value = !showSearch.value;
 };
-// export const searchColor = computed(() =>
+// const searchColor = computed(() =>
 //   showSearch.value ? "pink" : "yellowgreen"
 // );
 </script>
