@@ -17,6 +17,9 @@ export const createStore = () => {
   });
 
   const addStream = (id: string) => {
+    if (streams.value.some((s) => s.id === id)) {
+      return;
+    }
     streams.value.push({ id, muted: muted.value });
   };
 
