@@ -1,6 +1,6 @@
 import { ref, reactive, watchEffect, inject, computed } from "vue";
 import { VTB, Stream, StreamItem, streamStorage, vtbStorage } from "./utils";
-
+import api from "./api";
 export const stateSymbol = Symbol(`__holoframe__`);
 
 export const createStore = () => {
@@ -10,6 +10,7 @@ export const createStore = () => {
 
   const muted = ref(false);
   const fetching = ref(true);
+  const all = ref(false);
   const vtbs = reactive<Record<string, VTB>>(vtbStorage.get());
 
   watchEffect(() => {
@@ -39,16 +40,10 @@ export const createStore = () => {
         // streamRecords = {}
         return;
       }
-      const res = await fetch("https://api.yue.coffee/api/tv/v1.1", {
-        method: "post",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(vtbs),
-      });
-      const { data, error }: { data: Stream[]; error: any } = await res.json();
-      if (error) return;
+
+      const { data, error } = await api.fetchStreams(vtbs);
+      if (error || !data) return;
+
       data.forEach((stream) => {
         stream.length = getRelativeTime(stream.startTime);
         streamRecords[stream.id] = stream;
@@ -57,18 +52,8 @@ export const createStore = () => {
   }
   async function fetchTitle(id: string) {
     streamRecords[id].title = "fetching...";
-    const res = await fetch("https://api.yue.coffee/api/v1/page-title", {
-      method: "post",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        url: `https://www.youtube.com/watch?v=${id}`,
-      }),
-    });
-    const { data, error } = await res.json();
-    if (error) return;
+    const { data, error } = await api.fetchTitle(id);
+    if (error || !data) return;
     streamRecords[id].title = data.title;
   }
   const units: Record<string, number> = {
@@ -125,11 +110,34 @@ export const createStore = () => {
   function getCheckedVtbs() {
     return Object.keys(vtbs).filter((k) => vtbs[k].check);
   }
-  function toggleVtb(name: string) {
+  function toggleVtb(name: string, save: boolean = true) {
     if (vtbs[name] === undefined) return;
     vtbs[name].check = !vtbs[name].check;
-    vtbStorage.set(vtbs);
+    if (!all.value && save) {
+      vtbStorage.set(vtbs);
+    }
     fetchStreams();
+  }
+
+  function toggleVtbAll() {
+    const before = vtbStorage.get();
+    all.value = !all.value;
+    Object.keys(vtbs).map((k) => {
+      if (all.value) {
+        vtbs[k].check = true;
+      } else {
+        vtbs[k].check = before[k].check;
+      }
+    });
+
+    fetchStreams();
+  }
+  function clearVtbAll() {
+    all.value = false;
+    Object.keys(vtbs).map((k) => {
+      vtbs[k].check = false;
+    });
+    vtbStorage.set(vtbs);
   }
 
   function scrollToLiveStream() {
@@ -165,6 +173,9 @@ export const createStore = () => {
     getCheckedVtbs,
     scrollToLiveStream,
     toggleVtb,
+    all,
+    toggleVtbAll,
+    clearVtbAll,
   };
 };
 

@@ -114,7 +114,7 @@ const idInput = ref("");
 
 const controls = ref(1);
 const showControls = () => (controls.value = 1);
-const hideControls = () => (controls.value = 0);
+const hideControls = () => (controls.value = 1);
 const openThenFetch = async () => {
   open.value = true;
   await fetchStreams();

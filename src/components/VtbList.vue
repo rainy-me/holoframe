@@ -1,13 +1,5 @@
 <template>
   <ul class="vtb-list">
-    <!-- <li
-      v-for="vtb in checkedVtbs"
-      :key="vtb.name"
-      :class="['vtb', { checked: vtb.check }]"
-      @click.stop="toggleVtb(vtb.nameJP)"
-    >
-      {{ vtb.nameJP }}
-    </li> -->
     <li>
       <button class="btn" @click.stop="toggleSearch">
         <svg
@@ -44,12 +36,11 @@
     </li>
   </ul>
   <div v-show="showSearch">
-    <input
-      v-model="searchString"
-      class="search"
-      type="text"
-      placeholder="name..."
-    />
+    <div class="searchInput">
+      <input v-model="searchString" class="search" type="text" placeholder="name..." />
+      <span :class="['vtb', 'all', { checked: all }]" @click="() => toggleVtbAll()">all</span>
+      <span class="vtb" @click="() => clearVtbAll()">clear</span>
+    </div>
     <ul class="vtb-list">
       <li
         v-for="vtb in searchedVtbs"
@@ -57,9 +48,7 @@
         :class="['vtb', { checked: vtb.check }]"
         :title="`${vtb.nameJP}(${vtb.nameEN})`"
         @click.stop="toggleVtb(vtb.nameJP)"
-      >
-        {{ vtb.nameJP }}
-      </li>
+      >{{ vtb.nameJP }}</li>
     </ul>
   </div>
 </template>
@@ -68,7 +57,7 @@
 import { ref, computed } from "vue";
 import { useState } from "../store";
 
-const { vtbs, toggleVtb, fetchStreams, scrollToLiveStream } = useState();
+const { vtbs, all, toggleVtb, toggleVtbAll, clearVtbAll, fetchStreams, scrollToLiveStream } = useState();
 const searchString = ref("");
 const allVtbs = computed(() => Object.entries(vtbs).map(([, v]) => v));
 
@@ -97,6 +86,11 @@ const toggleSearch = () => {
 </script>
 
 <style scoped>
+.searchInput {
+  display: grid;
+  grid-template-columns: 2fr 0.5fr 0.5fr;
+  padding: 1rem 0 0;
+}
 .vtb-list {
   padding: 0;
   margin: 0;
@@ -135,6 +129,9 @@ const toggleSearch = () => {
   color: #fff;
   padding: 3px 5px;
   border: 2px #ccc solid;
+}
+.all {
+  width: 100%;
 }
 .search:hover {
   border: 2px skyblue solid;
