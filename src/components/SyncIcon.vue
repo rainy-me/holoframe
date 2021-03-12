@@ -35,6 +35,7 @@ const props = defineProps({
 .icon-sync {
   color: #ccc;
   height: 100%;
+  display: inline-block;
 }
 .animate {
   animation: r 1s linear infinite;

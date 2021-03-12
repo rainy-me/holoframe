@@ -219,7 +219,7 @@ const toggleOpen = () => {
 }
 .refetch {
   display: grid;
-  place-content: center;
+  /* place-content: center; */
   appearance: none;
   border: 0;
   background-color: rgba(0, 0, 0, 0.6);
