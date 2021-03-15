@@ -1,18 +1,17 @@
 import { ref, reactive, watchEffect, inject, computed } from "vue";
-import { VTB, Stream, StreamItem, streamStorage, vtbStorage } from "./utils";
-import api from "./api";
+import { VTB, Stream, StreamItem, streamStorage, vtbStorage } from "@/utils";
+import api from "@/api";
 export const stateSymbol = Symbol(`__holoframe__`);
 
+export const streamIds = computed(() => streams.value.map((s) => s.id));
+export const streams = ref<StreamItem[]>(streamStorage.get());
+export const streamRecords = reactive<Record<string, Stream>>({});
+export const muted = ref(false);
+export const fetching = ref(true);
+export const all = ref(false);
+export const vtbs = reactive<Record<string, VTB>>(vtbStorage.get());
+
 export const createStore = () => {
-  const streams = ref<StreamItem[]>(streamStorage.get());
-  const streamRecords = reactive<Record<string, Stream>>({});
-  const streamIds = computed(() => streams.value.map((s) => s.id));
-
-  const muted = ref(false);
-  const fetching = ref(true);
-  const all = ref(false);
-  const vtbs = reactive<Record<string, VTB>>(vtbStorage.get());
-
   watchEffect(() => {
     streamStorage.set(streams.value);
   });

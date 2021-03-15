@@ -11,32 +11,26 @@
           v-for="(stream, i) in Object.values(streamRecords)"
           :id="`stream-${stream.id}`"
           :key="stream.id"
-          :class="['stream', { 'is-streaming': stream.isStreaming }]"
+          :class="['stream transition', { 'is-streaming': stream.isStreaming }]"
           :tabindex="i"
           @click="addStream(stream.id)"
         >
           <div class="content">
-            <span class="start">
-              {{ formatTime(stream.startTime) }}
-            </span>
+            <span class="start">{{ formatTime(stream.startTime) }}</span>
             <span
               class="member"
               :style="{
+                // @ts-ignore
                 '--member--color': stream.members[0].color ?? '#ccc',
               }"
-            >
-              {{ stream.members[0].name }}
+            >{{ stream.members[0].name }}</span>
+            <span :class="['producer', producerMap[stream.producer]]">
+              {{
+                stream.producer
+              }}
             </span>
-            <span :class="['producer', producerMap[stream.producer]]">{{
-              stream.producer
-            }}</span>
             <span class="outlink">
-              <a
-                :href="stream.url"
-                target="_blank"
-                rel="nofollow noopener"
-                @click.stop
-              >
+              <a :href="stream.url" target="_blank" rel="nofollow noopener" @click.stop>
                 <svg
                   class="icon"
                   fill="none"
@@ -49,24 +43,20 @@
                     stroke-linejoin="round"
                     stroke-width="2"
                     d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  ></path>
+                  />
                 </svg>
               </a>
             </span>
           </div>
           <span class="title">
             <span v-if="stream.title">{{ stream.title }}</span>
-            <span v-else @click.stop="fetchTitle(stream.id)"> get title </span>
+            <span v-else @click.stop="fetchTitle(stream.id)">get title</span>
           </span>
           <div class="detail">
-            <img
-              class="thumbnail"
-              :src="stream.thumbnail"
-              :alt="stream.title"
-            />
+            <img class="thumbnail" :src="stream.thumbnail" :alt="stream.title" />
             <span v-if="stream.isStreaming" class="is-streaming-text">
               LIVE
-              <small class="time-relative"> started {{ stream.length }} </small>
+              <small class="time-relative">started {{ stream.length }}</small>
             </span>
           </div>
         </li>
@@ -94,8 +84,8 @@
 <script lang="ts" setup="{ root }">
 import { ref, onMounted } from "vue";
 import type { Stream } from "@/utils";
-import { useState } from "../store";
-import SyncIcon from "./SyncIcon.vue";
+import { useState } from "@/store";
+import SyncIcon from "./actions/Sync.vue";
 import vtbList from "./VtbList.vue";
 
 const refs = ref<HTMLLIElement[]>([]);

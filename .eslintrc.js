@@ -12,6 +12,7 @@ module.exports = {
     "prettier/@typescript-eslint",
   ],
   rules: {
+    indent: ["error", 2],
     "vue/require-prop-types": "off",
     "eslint-disable no-unused-vars": "off",
   },

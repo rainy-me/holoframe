@@ -40,44 +40,8 @@
             />
           </svg>
         </button>
-        <button class="base add" @click="toggleMuteAll">
-          <svg
-            v-if="muted"
-            class="icon"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2.5"
-              d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-              clip-rule="evenodd"
-            />
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2.5"
-              d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
-            />
-          </svg>
-          <svg
-            v-else
-            class="icon"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2.5"
-              d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-            />
-          </svg>
+        <button class="base">
+          <adjustments-icon />
         </button>
       </div>
     </div>
@@ -87,9 +51,10 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useState } from "../store";
+import { useState } from "@/store";
 import hStreamList from "./StreamList.vue";
-import SyncIcon from "./SyncIcon.vue";
+import SyncIcon from "./actions/Sync.vue";
+import AdjustmentsIcon from "./actions/Config/index.vue";
 
 const {
   fetching,
@@ -132,7 +97,7 @@ const toggleOpen = () => {
   font-size: 30px;
   width: 30rem;
   max-width: 100vw;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 .base {
   height: 40px;
@@ -142,6 +107,8 @@ const toggleOpen = () => {
   font-size: 24px;
   border: 0;
   appearance: none;
+  background-color: transparent;
+  color: #ccc;
 }
 .control input {
   width: 14rem;
@@ -199,12 +166,10 @@ const toggleOpen = () => {
 }
 
 .add {
-  background-color: transparent;
   color: #ccc;
 }
 .clear {
   background-color: transparent;
-  color: palevioletred;
 }
 .hide {
   height: max-content;

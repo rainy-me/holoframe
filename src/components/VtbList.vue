@@ -55,7 +55,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import { useState } from "../store";
+import { useState } from "@/store";
 
 const { vtbs, all, toggleVtb, toggleVtbAll, clearVtbAll, fetchStreams, scrollToLiveStream } = useState();
 const searchString = ref("");

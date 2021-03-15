@@ -1,11 +1,11 @@
 <template>
-  <h-frame-grid />
-  <h-controls />
+  <FrameGrid />
+  <Controls />
 </template>
 
 <script lang="ts" setup>
-import hFrameGrid from "./components/FrameGrid.vue";
-import hControls from "./components/Controls.vue";
+import FrameGrid from "./components/FrameGrid.vue";
+import Controls from "./components/Controls.vue";
 </script>
 
 <style scoped>

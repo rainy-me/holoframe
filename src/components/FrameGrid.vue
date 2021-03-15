@@ -1,43 +1,25 @@
 <template>
-  <div v-if="streamIds.length" class="view">
-    <h-frame-item
+  <transition-group tag="div" v-if="streamIds.length" name="view" class="view" :style="layoutStyle">
+    <FrameItem
       v-for="stream in streams"
       :id="stream.id"
       :key="stream.id"
       :muted="stream.muted"
-      class="frame"
+      class="frame view-item"
     />
-  </div>
+  </transition-group>
   <p v-else class="empty">No videos</p>
 </template>
 
 <script lang="ts" setup="props">
-import { computed, defineEmit } from "vue";
-import { useState } from "../store";
-import hFrameItem from "./FrameItem.vue";
+import { defineEmit } from "vue";
+import { useState } from "@/store";
+import { layoutStyle } from '@/store/layout'
+import FrameItem from "./FrameItem.vue";
 
 const emits = defineEmit(["remove"]);
 
 const { streams, streamIds } = useState();
-
-const c = computed(() => {
-  let cc = Array(Math.ceil(Math.sqrt(streamIds.value.length)))
-    .fill("1fr")
-    .join(" ");
-  return cc;
-});
-
-const r = computed(() =>
-  streamIds.value.length
-    ? Array(
-        Math.ceil(
-          streamIds.value.length / Math.ceil(Math.sqrt(streamIds.value.length))
-        )
-      )
-        .fill("1fr")
-        .join(" ")
-    : ""
-);
 
 const openComment = (id: string) =>
   window.open(`https://www.youtube.com/live_chat?v=${id}`);
@@ -46,8 +28,6 @@ const openComment = (id: string) =>
 <style scoped>
 .view {
   display: grid;
-  grid-template-rows: v-bind(r);
-  grid-template-columns: v-bind(c);
   height: 100vh;
 }
 
@@ -125,5 +105,19 @@ const openComment = (id: string) =>
 }
 .link:hover {
   background-color: lightskyblue;
+}
+.view-item {
+  display: inline-block;
+  margin-right: 10px;
+}
+.view-item-enter-active,
+.view-item-leave-active {
+  transition: all 1s ease;
+}
+.view-item-enter-from,
+.view-item-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+  position: absolute;
 }
 </style>

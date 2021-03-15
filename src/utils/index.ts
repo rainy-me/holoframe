@@ -1,5 +1,5 @@
 import { VTB, StreamItem } from "./types";
-import vtbs from "../assets/vtbs.json";
+import vtbs from "@/assets/vtbs.json";
 
 export * from "./types";
 
