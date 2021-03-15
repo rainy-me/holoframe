@@ -22,7 +22,7 @@
 <script lang="ts" setup="props">
 import { onMounted, watch, ref, defineProps } from "vue";
 import { useState } from "@/store";
-import { VolumeUp } from '../icons'
+import { VolumeUp } from '@/icons'
 import SyncIcon from "./actions/Sync.vue";
 
 const props = defineProps({
@@ -95,8 +95,6 @@ const openComment = (id: string) =>
 <style scoped>
 .view {
   display: grid;
-  grid-template-rows: v-bind(size);
-  grid-template-columns: v-bind(size);
   height: 100vh;
 }
 
