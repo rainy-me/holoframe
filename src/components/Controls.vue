@@ -1,17 +1,8 @@
 <template>
-  <div
-    :class="['control', { hide: !open }]"
-    @mouseover="showControls"
-    @mouseleave="hideControls"
-  >
+  <div :class="['control', { hide: !open }]" @mouseover="showControls" @mouseleave="hideControls">
     <div class="panel">
       <div class="shortcut">
-        <input
-          v-model="idInput"
-          class="base"
-          type="text"
-          @keydown.enter="addStream(idInput)"
-        />
+        <input v-model="idInput" class="base" type="text" @keydown.enter="addStream(idInput)" />
         <button class="base add" @click="addStream(idInput)">add</button>
         <!-- <button class="base clear" @click="clearStreams()">clear</button> -->
         <button class="base refetch" @click.stop="openThenFetch">
@@ -114,7 +105,8 @@ const idInput = ref("");
 
 const controls = ref(1);
 const showControls = () => (controls.value = 1);
-const hideControls = () => (controls.value = 1);
+const DEV_ALWAYS_SHOW = import.meta.env.DEV ? 1 : 0
+const hideControls = () => (controls.value = DEV_ALWAYS_SHOW);
 const openThenFetch = async () => {
   open.value = true;
   await fetchStreams();
