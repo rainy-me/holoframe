@@ -3,4 +3,4 @@ node_modules
 dist
 *.local
 .vscode 
-icons
+icons-origin
